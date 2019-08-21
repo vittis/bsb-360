@@ -13,10 +13,8 @@ function Home(props: NavigationScreenProps) {
 
 const Container = styled.View`
     flex: 1;
-    background-color: papayawhip;
     justify-content: center;
     align-items: center;
-    text-transform: uppercase;
 `;
 
 const Text = styled.Text`
