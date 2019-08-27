@@ -1,13 +1,24 @@
 import React, { useEffect } from 'react';
 import { NavigationScreenProps } from 'react-navigation';
+import { AsyncStorage, ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 
 function AuthLoading(props: NavigationScreenProps) {
     useEffect(() => {
         const checkAuth = async () => {
-            const delay = ms => new Promise(res => setTimeout(res, ms));
+            /* const delay = ms => new Promise(res => setTimeout(res, ms));
             await delay(3000);
-            props.navigation.navigate('Auth');
+             */
+            try {
+                const value = await AsyncStorage.getItem('token');
+                if (value !== null) {
+                    props.navigation.navigate('App');
+                } else {
+                    props.navigation.navigate('Auth');
+                }
+            } catch (error) {
+                props.navigation.navigate('Auth');
+            }
         };
 
         checkAuth();
@@ -16,7 +27,7 @@ function AuthLoading(props: NavigationScreenProps) {
 
     return (
         <Container>
-            <Text>Loading...</Text>
+            <ActivityIndicator size="large" />
         </Container>
     );
 }

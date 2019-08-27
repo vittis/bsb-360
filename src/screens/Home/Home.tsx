@@ -3,7 +3,6 @@ import { NavigationScreenProps } from 'react-navigation';
 import styled from 'styled-components/native';
 
 function Home(props: NavigationScreenProps) {
-    console.log(props);
     return (
         <Container>
             <Text>Home Screen</Text>
