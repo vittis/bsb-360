@@ -1,35 +1,14 @@
 import React from 'react';
 import * as Google from 'expo-google-app-auth';
 import { NavigationScreenProps } from 'react-navigation';
-import styled from 'styled-components/native';
-import { Button } from 'react-native-paper';
 import { Formik } from 'formik';
-import { TextInput } from 'react-native-paper';
-import { Ionicons, Entypo } from '@expo/vector-icons';
-import { View } from 'react-native';
-
-const Container = styled.View`
-    flex: 1;
-    align-items: center;
-    padding: 16px;
-`;
-
-const StyledButton = styled(Button)`
-    width: 100%;
-    margin-bottom: 16px;
-`;
-
-const SocialButton = styled(Button)`
-    margin-left: 8px;
-    margin-right: 8px;
-`;
-
-const StyledInput = styled(TextInput)`
-    width: 100%;
-    margin-bottom: 24px;
-`;
+import { Ionicons } from '@expo/vector-icons';
+import { Flex, StyledInput, StyledButton, SocialButton, Logo } from './styles';
 
 function Login(props: NavigationScreenProps) {
+    /**
+     * Handler Google Sign In button
+     */
     async function handleSignInWithGoogle() {
         try {
             //@ts-ignore
@@ -58,49 +37,44 @@ function Login(props: NavigationScreenProps) {
             onSubmit={values => console.log(values)}
         >
             {formikProps => (
-                <Container>
-                    <Entypo
+                <Flex flex={1} alignItems="center" padding={3}>
+                    <Logo
                         name="paper-plane"
                         size={80}
                         color="#6200ee"
-                        style={{ marginBottom: 32, marginTop: 8 }}
+                        mb={4}
+                        mt={2}
                     />
                     <StyledInput
                         label="email"
                         onChangeText={formikProps.handleChange('email')}
                         onBlur={formikProps.handleBlur('email')}
                         value={formikProps.values.email}
+                        mb={3}
                     />
                     <StyledInput
                         label="password"
                         onChangeText={formikProps.handleChange('password')}
                         onBlur={formikProps.handleBlur('password')}
                         value={formikProps.values.password}
+                        mb={4}
                     />
 
                     <StyledButton
                         mode="contained"
                         onPress={formikProps.handleSubmit as any}
+                        mb={3}
                     >
                         Sign In
                     </StyledButton>
-                    <StyledButton mode="outlined" onPress={() => {}}>
+                    <StyledButton mode="outlined" onPress={() => {}} mb={3}>
                         Create Account
                     </StyledButton>
                     <StyledButton onPress={() => {}} uppercase={false}>
                         Forgot your password?
                     </StyledButton>
-                    <View
-                        style={{
-                            flex: 1,
-                            justifyContent: 'flex-end',
-                        }}
-                    >
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                            }}
-                        >
+                    <Flex flex={1} justifyContent="flex-end">
+                        <Flex flexDirection="row">
                             <SocialButton
                                 uppercase={false}
                                 icon={() => (
@@ -112,6 +86,7 @@ function Login(props: NavigationScreenProps) {
                                 )}
                                 mode="outlined"
                                 onPress={handleSignInWithGoogle}
+                                mr={2}
                             >
                                 Google
                             </SocialButton>
@@ -126,12 +101,13 @@ function Login(props: NavigationScreenProps) {
                                 )}
                                 mode="outlined"
                                 onPress={handleSignInWithGoogle}
+                                ml={2}
                             >
                                 Facebook
                             </SocialButton>
-                        </View>
-                    </View>
-                </Container>
+                        </Flex>
+                    </Flex>
+                </Flex>
             )}
         </Formik>
     );
