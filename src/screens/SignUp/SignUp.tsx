@@ -1,11 +1,19 @@
 import React from 'react';
 import * as Google from 'expo-google-app-auth';
-import { NavigationScreenProps } from 'react-navigation';
+import { NavigationScreenProps, StackActions } from 'react-navigation';
 import { Formik } from 'formik';
-import { Ionicons } from '@expo/vector-icons';
-import { Flex, StyledInput, StyledButton, SocialButton, Logo } from './styles';
+import { Ionicons, Entypo } from '@expo/vector-icons';
+import { AsyncStorage } from 'react-native';
+import api from '../../api/api';
+import { Button } from '../../shared/Button';
+import { TextInput } from '../../shared/TextInput';
+import { Flex } from '../../shared/Flex';
 
-function Login(props: NavigationScreenProps) {
+SignUp.navigationOptions = {
+    title: 'Sign Up',
+};
+
+function SignUp(props: NavigationScreenProps) {
     /**
      * Handler Google Sign In button
      */
@@ -31,51 +39,81 @@ function Login(props: NavigationScreenProps) {
         }
     }
 
+    function handleSignIn() {
+        const replaceAction = StackActions.replace({
+            routeName: 'SignIn',
+        });
+        props.navigation.dispatch(replaceAction);
+    }
+
     return (
         <Formik
-            initialValues={{ email: '', password: '' }}
+            initialValues={{ username: '', password: '', confirmPassword: '' }}
             onSubmit={values => console.log(values)}
         >
             {formikProps => (
-                <Flex flex={1} alignItems="center" padding={3}>
-                    <Logo
-                        name="paper-plane"
-                        size={80}
-                        color="#6200ee"
-                        mb={4}
-                        mt={2}
-                    />
-                    <StyledInput
-                        label="email"
-                        onChangeText={formikProps.handleChange('email')}
-                        onBlur={formikProps.handleBlur('email')}
-                        value={formikProps.values.email}
+                <Flex flex={1} alignItems="center" padding={3} mt={2}>
+                    <Entypo name="paper-plane" size={80} color="#6200ee" />
+
+                    {/* Username Input */}
+                    <TextInput
+                        label="username"
+                        onChangeText={formikProps.handleChange('username')}
+                        onBlur={formikProps.handleBlur('username')}
+                        value={formikProps.values.username}
+                        autoCompleteType="username"
+                        fullWidth
                         mb={3}
                     />
-                    <StyledInput
+
+                    {/* Password Input */}
+                    <TextInput
                         label="password"
                         onChangeText={formikProps.handleChange('password')}
                         onBlur={formikProps.handleBlur('password')}
                         value={formikProps.values.password}
+                        secureTextEntry
+                        fullWidth
+                        mb={3}
+                    />
+
+                    {/* Confirm Password Input */}
+                    <TextInput
+                        label="confirm password"
+                        onChangeText={formikProps.handleChange(
+                            'confirmPassword'
+                        )}
+                        onBlur={formikProps.handleBlur('confirmPassword')}
+                        value={formikProps.values.confirmPassword}
+                        secureTextEntry
+                        fullWidth
                         mb={4}
                     />
 
-                    <StyledButton
+                    {/* Create Account Button */}
+                    <Button
                         mode="contained"
                         onPress={formikProps.handleSubmit as any}
                         mb={3}
+                        width={1}
+                    >
+                        Create Account
+                    </Button>
+
+                    {/* Sigin in Button */}
+                    <Button
+                        mode="outlined"
+                        onPress={handleSignIn}
+                        mb={3}
+                        width={1}
                     >
                         Sign In
-                    </StyledButton>
-                    <StyledButton mode="outlined" onPress={() => {}} mb={3}>
-                        Create Account
-                    </StyledButton>
-                    <StyledButton onPress={() => {}} uppercase={false}>
-                        Forgot your password?
-                    </StyledButton>
+                    </Button>
+
+                    {/* Social Buttons */}
                     <Flex flex={1} justifyContent="flex-end">
                         <Flex flexDirection="row">
-                            <SocialButton
+                            <Button
                                 uppercase={false}
                                 icon={() => (
                                     <Ionicons
@@ -86,11 +124,11 @@ function Login(props: NavigationScreenProps) {
                                 )}
                                 mode="outlined"
                                 onPress={handleSignInWithGoogle}
-                                mr={2}
                             >
                                 Google
-                            </SocialButton>
-                            <SocialButton
+                            </Button>
+                            <Flex mx={2} />
+                            <Button
                                 uppercase={false}
                                 icon={() => (
                                     <Ionicons
@@ -101,10 +139,9 @@ function Login(props: NavigationScreenProps) {
                                 )}
                                 mode="outlined"
                                 onPress={handleSignInWithGoogle}
-                                ml={2}
                             >
                                 Facebook
-                            </SocialButton>
+                            </Button>
                         </Flex>
                     </Flex>
                 </Flex>
@@ -112,5 +149,5 @@ function Login(props: NavigationScreenProps) {
         </Formik>
     );
 }
-/*  */
-export default Login;
+
+export default SignUp;

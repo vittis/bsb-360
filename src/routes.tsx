@@ -5,7 +5,8 @@ import {
     createSwitchNavigator,
 } from 'react-navigation';
 import Home from './screens/Home';
-import Login from './screens/Login';
+import SignIn from './screens/SignIn';
+import SignUp from './screens/SignUp';
 import AuthLoading from './screens/AuthLoading';
 import logo from './assets/instagram.png';
 import styled from 'styled-components/native';
@@ -31,12 +32,12 @@ const AppStack = createStackNavigator(
 
 const AuthStack = createStackNavigator(
     {
-        Login,
+        SignIn,
+        SignUp,
     },
     {
         headerLayoutPreset: 'center',
         defaultNavigationOptions: {
-            title: 'Sign in',
             headerStyle: {
                 backgroundColor: '#F5F5F5',
             },

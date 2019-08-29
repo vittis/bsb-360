@@ -6,10 +6,9 @@ import styled from 'styled-components/native';
 function AuthLoading(props: NavigationScreenProps) {
     useEffect(() => {
         const checkAuth = async () => {
-            /* const delay = ms => new Promise(res => setTimeout(res, ms));
-            await delay(3000);
-             */
             try {
+                //@todo: DEV TESTING ONLY, REMOVE IN PROD
+                await AsyncStorage.clear();
                 const value = await AsyncStorage.getItem('token');
                 if (value !== null) {
                     props.navigation.navigate('App');
