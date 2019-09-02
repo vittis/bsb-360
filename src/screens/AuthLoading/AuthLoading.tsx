@@ -8,7 +8,7 @@ function AuthLoading(props: NavigationScreenProps) {
         const checkAuth = async () => {
             try {
                 //@todo: DEV TESTING ONLY, REMOVE IN PROD
-                await AsyncStorage.clear();
+                //await AsyncStorage.clear();
                 const value = await AsyncStorage.getItem('token');
                 if (value !== null) {
                     props.navigation.navigate('App');

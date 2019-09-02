@@ -229,13 +229,4 @@ function SignIn(props: NavigationScreenProps) {
     );
 }
 
-/* const mapStateToProps = (state: ApplicationState) => ({
-    auth: state.auth,
-});
-
-export default connect(
-    mapStateToProps,
-    { authRequest }
-)(SignIn); */
-
 export default SignIn;

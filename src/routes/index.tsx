@@ -4,12 +4,13 @@ import {
     createStackNavigator,
     createSwitchNavigator,
 } from 'react-navigation';
-import Home from './screens/Home';
-import SignIn from './screens/SignIn';
-import SignUp from './screens/SignUp';
-import AuthLoading from './screens/AuthLoading';
+import Home from '../screens/Home';
+import SignIn from '../screens/SignIn';
+import SignUp from '../screens/SignUp';
+import AuthLoading from '../screens/AuthLoading';
 import styled from 'styled-components/native';
 import { Octicons } from '@expo/vector-icons';
+import withAuthRoute from './withAuthRoute';
 
 const LogoText = styled.Text`
     margin-left: 10px;
@@ -17,9 +18,27 @@ const LogoText = styled.Text`
     font-style: italic;
 `;
 
+/**
+ * Wrap screens with withAuthRoute HOC
+ * and serialize it to navigator format
+ *
+ * @param screens
+ */
+const createAuthRoutes = (screens: any[]) => {
+    const obj = {};
+    screens.forEach(screen => {
+        obj[screen.name] = withAuthRoute(screen);
+        obj[screen.name].navigationOptions = screen.navigationOptions;
+    });
+    return obj;
+};
+
+/**
+ * Main App Stack
+ */
 const AppStack = createStackNavigator(
     {
-        Home,
+        ...createAuthRoutes([Home]),
     },
     {
         headerLayoutPreset: 'center',
@@ -37,6 +56,9 @@ const AppStack = createStackNavigator(
     }
 );
 
+/**
+ * Auth Stack
+ */
 const AuthStack = createStackNavigator(
     {
         SignIn,
