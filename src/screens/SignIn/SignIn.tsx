@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import * as Google from 'expo-google-app-auth';
-import { NavigationScreenProps, StackActions } from 'react-navigation';
+import { NavigationScreenProps } from 'react-navigation';
 import { Formik } from 'formik';
 import { Ionicons, Entypo, Octicons } from '@expo/vector-icons';
-import { AsyncStorage } from 'react-native';
 import { Snackbar, HelperText } from 'react-native-paper';
 import * as Yup from 'yup';
-import { connect } from 'react-redux';
 import { Button } from '../../shared/Button';
 import { TextInput } from '../../shared/TextInput';
 import { Flex } from '../../shared/Flex';
-import { authRequest } from '../../store/ducks/auth/actions';
-import { ApplicationState } from '../../store';
-import { AuthState } from '../../store/ducks/auth/types';
+import { useAuth } from '../../store/ducks/auth/hooks';
 
 SignIn.navigationOptions = {
     title: 'Sign In',
@@ -27,24 +23,16 @@ const SignInSchema = Yup.object().shape({
         .required('Password is required'),
 });
 
-interface StateProps {
-    auth: AuthState;
-}
-
-interface DispatchProps {
-    authRequest: typeof authRequest;
-}
-
-type Props = StateProps & DispatchProps & NavigationScreenProps;
-
-function SignIn(props: Props) {
+function SignIn(props: NavigationScreenProps) {
     const [showPlaneIcon, setShowPlaneIcon] = useState(false);
 
+    const { auth, authRequest } = useAuth();
+
     useEffect(() => {
-        if (props.auth.user) {
+        if (auth.user) {
             onSignInSuccess();
         }
-    }, [props.auth]);
+    }, [auth]);
 
     /**
      * Called after successful login
@@ -80,15 +68,11 @@ function SignIn(props: Props) {
     }
 
     /**
-     * Handler onPress de Create Account Button
+     * Handler onPress Create Account Button
      *
-     * @param token
      */
     function handleCreateAccount() {
-        const replaceAction = StackActions.replace({
-            routeName: 'SignUp',
-        });
-        props.navigation.dispatch(replaceAction);
+        props.navigation.navigate('SignUp');
     }
 
     return (
@@ -97,8 +81,8 @@ function SignIn(props: Props) {
             validateOnChange={false}
             validateOnBlur={false}
             initialValues={{ email: '', password: '' }}
-            onSubmit={async values => {
-                props.authRequest(values);
+            onSubmit={values => {
+                authRequest(values);
             }}
         >
             {({
@@ -118,10 +102,10 @@ function SignIn(props: Props) {
                         <Octicons name="globe" size={85} color="#6200ee" />
                     )}
 
-                    {/* Username Input */}
+                    {/* Email Input */}
                     <TextInput
                         label="email"
-                        error={errors.email || props.auth.error ? true : false}
+                        error={errors.email || auth.error ? true : false}
                         onChangeText={handleChange('email')}
                         onBlur={handleBlur('email')}
                         value={values.email}
@@ -143,9 +127,7 @@ function SignIn(props: Props) {
                     {/* Passwrod Input */}
                     <TextInput
                         label="password"
-                        error={
-                            errors.password || props.auth.error ? true : false
-                        }
+                        error={errors.password || auth.error ? true : false}
                         onChangeText={handleChange('password')}
                         onBlur={handleBlur('password')}
                         value={values.password}
@@ -167,8 +149,8 @@ function SignIn(props: Props) {
                     <Button
                         mode="contained"
                         onPress={handleSubmit as any}
-                        disabled={props.auth.loading}
-                        loading={props.auth.loading}
+                        disabled={auth.loading}
+                        loading={auth.loading}
                         mb={3}
                         mt={4}
                         width={1}
@@ -247,11 +229,13 @@ function SignIn(props: Props) {
     );
 }
 
-const mapStateToProps = (state: ApplicationState) => ({
+/* const mapStateToProps = (state: ApplicationState) => ({
     auth: state.auth,
 });
 
 export default connect(
     mapStateToProps,
     { authRequest }
-)(SignIn);
+)(SignIn); */
+
+export default SignIn;

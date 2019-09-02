@@ -40,10 +40,7 @@ function SignUp(props: NavigationScreenProps) {
     }
 
     function handleSignIn() {
-        const replaceAction = StackActions.replace({
-            routeName: 'SignIn',
-        });
-        props.navigation.dispatch(replaceAction);
+        props.navigation.navigate('SignIn');
     }
 
     return (
