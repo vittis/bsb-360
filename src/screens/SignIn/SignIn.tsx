@@ -1,29 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Google from 'expo-google-app-auth';
 import { NavigationScreenProps, StackActions } from 'react-navigation';
 import { Formik } from 'formik';
 import { Ionicons, Entypo, Octicons } from '@expo/vector-icons';
 import { AsyncStorage } from 'react-native';
-import api from '../../services/api';
 import { Snackbar, HelperText } from 'react-native-paper';
 import * as Yup from 'yup';
+import { connect } from 'react-redux';
 import { Button } from '../../shared/Button';
 import { TextInput } from '../../shared/TextInput';
 import { Flex } from '../../shared/Flex';
+import { authRequest } from '../../store/ducks/auth/actions';
+import { ApplicationState } from '../../store';
+import { AuthState } from '../../store/ducks/auth/types';
 
 SignIn.navigationOptions = {
     title: 'Sign In',
 };
 
 const SignInSchema = Yup.object().shape({
-    username: Yup.string().required('Username is required!'),
+    email: Yup.string()
+        .email('Invalid email format')
+        .required('Email is required'),
     password: Yup.string()
         .min(6, 'Invalid password, minimum length: 6')
-        .required('Password is required!'),
+        .required('Password is required'),
 });
 
-function SignIn(props: NavigationScreenProps) {
+interface StateProps {
+    auth: AuthState;
+}
+
+interface DispatchProps {
+    authRequest: typeof authRequest;
+}
+
+type Props = StateProps & DispatchProps & NavigationScreenProps;
+
+function SignIn(props: Props) {
     const [showPlaneIcon, setShowPlaneIcon] = useState(false);
+
+    useEffect(() => {
+        if (props.auth.user) {
+            onSignInSuccess();
+        }
+    }, [props.auth]);
+
+    /**
+     * Called after successful login
+     *
+     */
+    async function onSignInSuccess() {
+        props.navigation.navigate('App');
+    }
 
     /**
      * Handler onPress Google Sign In button
@@ -51,20 +80,6 @@ function SignIn(props: NavigationScreenProps) {
     }
 
     /**
-     * Called after successful login
-     *
-     * @param token
-     */
-    async function onSignInSuccess(token: string) {
-        try {
-            await AsyncStorage.setItem('token', token);
-            props.navigation.navigate('App');
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    /**
      * Handler onPress de Create Account Button
      *
      * @param token
@@ -81,25 +96,9 @@ function SignIn(props: NavigationScreenProps) {
             validationSchema={SignInSchema}
             validateOnChange={false}
             validateOnBlur={false}
-            initialValues={{ username: '', password: '' }}
-            onSubmit={async (
-                values,
-                { setSubmitting, resetForm, setStatus }
-            ) => {
-                try {
-                    setSubmitting(true);
-                    //const response = await api.post('/login', values);
-                    const delay = ms => new Promise(res => setTimeout(res, ms));
-                    await delay(3500);
-                    await onSignInSuccess('opa');
-                    //await onSignInSuccess(response.data.token);
-                } catch (err) {
-                    resetForm();
-                    setStatus({ error: true });
-                    console.log('submit catch', err.response.status);
-                } finally {
-                    setSubmitting(false);
-                }
+            initialValues={{ email: '', password: '' }}
+            onSubmit={async values => {
+                props.authRequest(values);
             }}
         >
             {({
@@ -109,7 +108,6 @@ function SignIn(props: NavigationScreenProps) {
                 handleSubmit,
                 status,
                 setStatus,
-                isSubmitting,
                 errors,
             }) => (
                 <Flex flex={1} alignItems="center" padding={3} mt={2}>
@@ -122,28 +120,32 @@ function SignIn(props: NavigationScreenProps) {
 
                     {/* Username Input */}
                     <TextInput
-                        label="username"
-                        error={errors.username ? true : false}
-                        onChangeText={handleChange('username')}
-                        onBlur={handleBlur('username')}
-                        value={values.username}
-                        autoCompleteType="username"
+                        label="email"
+                        error={errors.email || props.auth.error ? true : false}
+                        onChangeText={handleChange('email')}
+                        onBlur={handleBlur('email')}
+                        value={values.email}
+                        autoCompleteType="off"
+                        autoCorrect={false}
+                        autoFocus
                         fullWidth
                         mt={4}
                     />
-                    {errors.username && (
+                    {errors.email && (
                         <HelperText
                             type="error"
-                            visible={errors.username ? true : false}
+                            visible={errors.email ? true : false}
                         >
-                            {errors.username}
+                            {errors.email}
                         </HelperText>
                     )}
 
                     {/* Passwrod Input */}
                     <TextInput
                         label="password"
-                        error={errors.password ? true : false}
+                        error={
+                            errors.password || props.auth.error ? true : false
+                        }
                         onChangeText={handleChange('password')}
                         onBlur={handleBlur('password')}
                         value={values.password}
@@ -165,8 +167,8 @@ function SignIn(props: NavigationScreenProps) {
                     <Button
                         mode="contained"
                         onPress={handleSubmit as any}
-                        disabled={isSubmitting}
-                        loading={isSubmitting}
+                        disabled={props.auth.loading}
+                        loading={props.auth.loading}
                         mb={3}
                         mt={4}
                         width={1}
@@ -224,6 +226,7 @@ function SignIn(props: NavigationScreenProps) {
                         </Flex>
                     </Flex>
 
+                    {/* TODO: move to global error logic */}
                     <Snackbar
                         visible={status ? true : false}
                         onDismiss={() => {
@@ -244,4 +247,11 @@ function SignIn(props: NavigationScreenProps) {
     );
 }
 
-export default SignIn;
+const mapStateToProps = (state: ApplicationState) => ({
+    auth: state.auth,
+});
+
+export default connect(
+    mapStateToProps,
+    { authRequest }
+)(SignIn);

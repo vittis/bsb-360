@@ -1,3 +1,6 @@
 {
-    "extends": ["@react-native-community", "prettier"]
+    "extends": ["@react-native-community", "prettier"],
+    "rules": {
+        "react-hooks/exhaustive-deps": 0
+    }
 }

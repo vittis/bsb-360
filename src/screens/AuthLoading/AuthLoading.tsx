@@ -20,8 +20,6 @@ function AuthLoading(props: NavigationScreenProps) {
             }
         };
         checkAuth();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
