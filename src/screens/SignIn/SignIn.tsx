@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as Google from 'expo-google-app-auth';
 import { NavigationScreenProps, StackActions } from 'react-navigation';
 import { Formik } from 'formik';
-import { Ionicons, Entypo } from '@expo/vector-icons';
+import { Ionicons, Entypo, Octicons } from '@expo/vector-icons';
 import { AsyncStorage } from 'react-native';
-import api from '../../api/api';
+import api from '../../services/api';
 import { Snackbar, HelperText } from 'react-native-paper';
 import * as Yup from 'yup';
 import { Button } from '../../shared/Button';
@@ -23,6 +23,8 @@ const SignInSchema = Yup.object().shape({
 });
 
 function SignIn(props: NavigationScreenProps) {
+    const [showPlaneIcon, setShowPlaneIcon] = useState(false);
+
     /**
      * Handler onPress Google Sign In button
      */
@@ -86,8 +88,11 @@ function SignIn(props: NavigationScreenProps) {
             ) => {
                 try {
                     setSubmitting(true);
-                    const response = await api.post('/login', values);
-                    await onSignInSuccess(response.data.token);
+                    //const response = await api.post('/login', values);
+                    const delay = ms => new Promise(res => setTimeout(res, ms));
+                    await delay(3500);
+                    await onSignInSuccess('opa');
+                    //await onSignInSuccess(response.data.token);
                 } catch (err) {
                     resetForm();
                     setStatus({ error: true });
@@ -108,7 +113,12 @@ function SignIn(props: NavigationScreenProps) {
                 errors,
             }) => (
                 <Flex flex={1} alignItems="center" padding={3} mt={2}>
-                    <Entypo name="paper-plane" size={80} color="#6200ee" />
+                    {showPlaneIcon && (
+                        <Entypo name="paper-plane" size={83} color="#6200ee" />
+                    )}
+                    {!showPlaneIcon && (
+                        <Octicons name="globe" size={85} color="#6200ee" />
+                    )}
 
                     {/* Username Input */}
                     <TextInput
@@ -207,7 +217,7 @@ function SignIn(props: NavigationScreenProps) {
                                     />
                                 )}
                                 mode="outlined"
-                                onPress={handleSignInWithGoogle}
+                                onPress={() => setShowPlaneIcon(!showPlaneIcon)}
                             >
                                 Facebook
                             </Button>

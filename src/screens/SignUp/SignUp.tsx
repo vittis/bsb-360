@@ -4,7 +4,7 @@ import { NavigationScreenProps, StackActions } from 'react-navigation';
 import { Formik } from 'formik';
 import { Ionicons, Entypo } from '@expo/vector-icons';
 import { AsyncStorage } from 'react-native';
-import api from '../../api/api';
+import api from '../../services/api';
 import { Button } from '../../shared/Button';
 import { TextInput } from '../../shared/TextInput';
 import { Flex } from '../../shared/Flex';

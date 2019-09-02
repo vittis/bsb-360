@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Insta Clone",
-    "slug": "instagram-feed-clone",
+    "name": "Bsb 360",
+    "slug": "bsb-360",
     "privacy": "public",
     "sdkVersion": "34.0.0",
     "platforms": [
@@ -31,6 +31,7 @@
       "backgroundColor": "#f5f5f5",
       "barStyle": "dark-content"
     },
-    "scheme": "authtest"
+    "scheme": "authtest",
+    "description": ""
   }
 }
