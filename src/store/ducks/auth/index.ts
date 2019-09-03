@@ -16,19 +16,28 @@ const reducer: Reducer<AuthState> = (state = INITIAL_STATE, action) => {
         case AuthTypes.AUTH_SUCCCES:
             return {
                 ...state,
-                loading: false,
-                error: false,
-                isAuthenticated: true,
                 user: action.payload.user,
                 token: action.payload.token,
+                isAuthenticated: true,
+                loading: false,
+                error: false,
             };
         case AuthTypes.AUTH_FAILURE:
             return {
                 ...state,
-                loading: false,
-                error: true,
                 user: null,
                 token: null,
+                isAuthenticated: false,
+                loading: false,
+                error: true,
+            };
+        case AuthTypes.SIGN_OUT:
+            return {
+                user: null,
+                token: null,
+                isAuthenticated: false,
+                loading: false,
+                error: false,
             };
         default:
             return state;

@@ -3,7 +3,7 @@ import { AsyncStorage } from 'react-native';
 import api from '../../../services/api';
 import { AxiosResponse } from 'axios';
 import { AuthRO } from './types';
-import { authSuccess, authFailure, authRequest } from './actions';
+import { authSuccess, authFailure, authRequest, authSignOut } from './actions';
 
 // @todo: for dev testing purposes
 const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -32,4 +32,8 @@ export function* signIn(action: ReturnType<typeof authRequest>) {
         console.log(err);
         yield put(authFailure());
     }
+}
+
+export function* signOut(_action: ReturnType<typeof authSignOut>) {
+    yield call(AsyncStorage.removeItem, 'token');
 }

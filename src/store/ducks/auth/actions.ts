@@ -11,3 +11,5 @@ export const authSuccess = (response: AuthRO) =>
     });
 
 export const authFailure = () => action(AuthTypes.AUTH_FAILURE);
+
+export const authSignOut = () => action(AuthTypes.SIGN_OUT);

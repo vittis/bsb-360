@@ -1,25 +1,18 @@
 import React, { useEffect } from 'react';
 import { NavigationScreenProps } from 'react-navigation';
-import { AsyncStorage, ActivityIndicator } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
+import { useAuth } from '../../store/ducks/auth/hooks';
 
 function AuthLoading(props: NavigationScreenProps) {
+    const { auth } = useAuth();
+
     useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                //@todo: DEV TESTING ONLY, REMOVE IN PROD
-                //await AsyncStorage.clear();
-                const value = await AsyncStorage.getItem('token');
-                if (value !== null) {
-                    props.navigation.navigate('App');
-                } else {
-                    props.navigation.navigate('Auth');
-                }
-            } catch (error) {
-                props.navigation.navigate('Auth');
-            }
-        };
-        checkAuth();
+        if (auth.isAuthenticated) {
+            props.navigation.navigate('App');
+        } else {
+            props.navigation.navigate('Auth');
+        }
     }, []);
 
     return (

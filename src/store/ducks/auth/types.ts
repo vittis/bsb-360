@@ -2,9 +2,10 @@
  * Action types
  */
 export enum AuthTypes {
-    AUTH_REQUEST = '@auth/SIGN_IN_REQUEST',
-    AUTH_SUCCCES = '@auth/SIGN_IN_SUCCCES',
-    AUTH_FAILURE = '@auth/SIGN_IN_FAILURE',
+    AUTH_REQUEST = '@auth/AUTH_REQUEST',
+    AUTH_SUCCCES = '@auth/AUTH_SUCCCES',
+    AUTH_FAILURE = '@auth/AUTH_FAILURE',
+    SIGN_OUT = '@auth/SIGN_OUT',
 }
 
 /**

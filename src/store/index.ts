@@ -1,4 +1,6 @@
 import { createStore, applyMiddleware, Store } from 'redux';
+import { persistStore, persistReducer } from 'redux-persist';
+import { AsyncStorage } from 'react-native';
 import createSagaMiddleware from 'redux-saga';
 import { AuthState } from './ducks/auth/types';
 
@@ -9,13 +11,22 @@ export interface ApplicationState {
     auth: AuthState;
 }
 
+const persistConfig = {
+    key: 'root',
+    storage: AsyncStorage,
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
 const sagaMiddleware = createSagaMiddleware();
 
 const store: Store<ApplicationState> = createStore(
-    rootReducer,
+    persistedReducer,
     applyMiddleware(sagaMiddleware)
 );
 
 sagaMiddleware.run(rootSaga);
 
-export default store;
+let persistor = persistStore(store);
+
+export { store, persistor };

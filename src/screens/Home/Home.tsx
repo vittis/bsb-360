@@ -2,15 +2,17 @@ import React from 'react';
 import { NavigationScreenProps } from 'react-navigation';
 import styled from 'styled-components/native';
 import { Button } from '../../shared/Button';
+import { useAuth } from '../../store/ducks/auth/hooks';
 
 function Home(props: NavigationScreenProps) {
+    const { authSignOut } = useAuth();
     return (
         <Container>
             <Text>Home Screen</Text>
             <Button
                 mode="contained"
                 onPress={() => {
-                    console.log('Logout');
+                    authSignOut();
                 }}
             >
                 Logout
