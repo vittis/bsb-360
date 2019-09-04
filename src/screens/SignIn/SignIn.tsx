@@ -3,7 +3,7 @@ import * as Google from 'expo-google-app-auth';
 import { NavigationScreenProps } from 'react-navigation';
 import { Formik } from 'formik';
 import { Ionicons, Entypo, Octicons } from '@expo/vector-icons';
-import { Snackbar, HelperText } from 'react-native-paper';
+import { HelperText } from 'react-native-paper';
 import * as Yup from 'yup';
 import { Button } from '../../shared/Button';
 import { TextInput } from '../../shared/TextInput';
@@ -26,7 +26,7 @@ const SignInSchema = Yup.object().shape({
 function SignIn(props: NavigationScreenProps) {
     const [showPlaneIcon, setShowPlaneIcon] = useState(false);
 
-    const { auth, authRequest } = useAuth();
+    const { auth, authRequest, authSignOut } = useAuth();
 
     useEffect(() => {
         if (auth.user) {
@@ -85,15 +85,7 @@ function SignIn(props: NavigationScreenProps) {
                 authRequest(values);
             }}
         >
-            {({
-                values,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                status,
-                setStatus,
-                errors,
-            }) => (
+            {({ values, handleChange, handleBlur, handleSubmit, errors }) => (
                 <Flex flex={1} alignItems="center" padding={3} mt={2}>
                     {showPlaneIcon && (
                         <Entypo name="paper-plane" size={83} color="#6200ee" />
@@ -207,22 +199,6 @@ function SignIn(props: NavigationScreenProps) {
                             </Button>
                         </Flex>
                     </Flex>
-
-                    {/* TODO: move to global error logic */}
-                    <Snackbar
-                        visible={status ? true : false}
-                        onDismiss={() => {
-                            setStatus(null);
-                        }}
-                        action={{
-                            label: 'hide',
-                            onPress: () => {
-                                setStatus(null);
-                            },
-                        }}
-                    >
-                        An error has ocurred...
-                    </Snackbar>
                 </Flex>
             )}
         </Formik>
