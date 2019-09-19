@@ -4,6 +4,7 @@ import styled from 'styled-components/native';
 import { Button } from '../../shared/Button';
 import { useAuth } from '../../store/ducks/auth/hooks';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function Home(props: NavigationScreenProps) {
     const { authSignOut } = useAuth();
     return (
