@@ -3,11 +3,14 @@ import { NavigationScreenProps } from 'react-navigation';
 import { ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 import { useAuth } from '../../store/ducks/auth/hooks';
+import { useError } from '../../store/ducks/error/hooks';
 
 function AuthLoading(props: NavigationScreenProps) {
     const { auth } = useAuth();
+    const { clearErrors } = useError();
 
     useEffect(() => {
+        clearErrors();
         if (auth.isAuthenticated) {
             props.navigation.navigate('App');
         } else {

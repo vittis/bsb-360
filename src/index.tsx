@@ -21,17 +21,17 @@ function App() {
 }
 
 const Error = () => {
-    const { error, clearError } = useError();
+    const { error, clearErrors } = useError();
     return (
         <Snackbar
-            visible={error.hasError}
+            visible={error.requestError}
             onDismiss={() => {
-                clearError();
+                clearErrors();
             }}
             action={{
                 label: 'hide',
                 onPress: () => {
-                    clearError();
+                    clearErrors();
                 },
             }}
         >

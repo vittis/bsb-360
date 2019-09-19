@@ -18,6 +18,7 @@ export interface ApplicationState {
 const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
+    blacklist: ['error'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

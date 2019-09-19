@@ -2,18 +2,19 @@ import { Reducer } from 'redux';
 import { ErrorState, ErrorTypes } from './types';
 
 const INITIAL_STATE: ErrorState = {
-    hasError: false,
+    requestError: false,
 };
 
 const reducer: Reducer<ErrorState> = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case ErrorTypes.SET_ERROR:
             return {
-                hasError: true,
+                requestError: true,
             };
         case ErrorTypes.CLEAR_ERROR:
+            console.log('clear this shit');
             return {
-                hasError: false,
+                requestError: false,
             };
         default:
             return state;

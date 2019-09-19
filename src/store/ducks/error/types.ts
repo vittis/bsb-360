@@ -3,12 +3,12 @@
  */
 export enum ErrorTypes {
     SET_ERROR = '@error/SET_ERROR',
-    CLEAR_ERROR = '@error/CLEAR_ERROR',
+    CLEAR_ERRORS = '@error/CLEAR_ERRORS',
 }
 
 /**
  * State type
  */
 export interface ErrorState {
-    readonly hasError: boolean;
+    readonly requestError: boolean;
 }

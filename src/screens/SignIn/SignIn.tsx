@@ -9,6 +9,7 @@ import { Button } from '../../shared/Button';
 import { TextInput } from '../../shared/TextInput';
 import { Flex } from '../../shared/Flex';
 import { useAuth } from '../../store/ducks/auth/hooks';
+import { useError } from '../../store/ducks/error/hooks';
 
 SignIn.navigationOptions = {
     title: 'Sign In',
@@ -26,7 +27,8 @@ const SignInSchema = Yup.object().shape({
 function SignIn(props: NavigationScreenProps) {
     const [showPlaneIcon, setShowPlaneIcon] = useState(false);
 
-    const { auth, authRequest, authSignOut } = useAuth();
+    const { auth, authRequest } = useAuth();
+    const { error } = useError();
 
     useEffect(() => {
         if (auth.user) {
@@ -97,7 +99,9 @@ function SignIn(props: NavigationScreenProps) {
                     {/* Email Input */}
                     <TextInput
                         label="email"
-                        error={errors.email || auth.error ? true : false}
+                        error={
+                            errors.email || error.requestError ? true : false
+                        }
                         onChangeText={handleChange('email')}
                         onBlur={handleBlur('email')}
                         value={values.email}
@@ -119,7 +123,9 @@ function SignIn(props: NavigationScreenProps) {
                     {/* Passwrod Input */}
                     <TextInput
                         label="password"
-                        error={errors.password || auth.error ? true : false}
+                        error={
+                            errors.password || error.requestError ? true : false
+                        }
                         onChangeText={handleChange('password')}
                         onBlur={handleBlur('password')}
                         value={values.password}
