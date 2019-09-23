@@ -4,6 +4,7 @@ import { AuthState, AuthTypes } from './types';
 const INITIAL_STATE: AuthState = {
     user: null,
     token: null,
+    refreshToken: null,
     isAuthenticated: false,
     loading: false,
     error: false,
@@ -13,20 +14,20 @@ const reducer: Reducer<AuthState> = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case AuthTypes.AUTH_REQUEST:
             return { ...state, error: false, loading: true };
-        case AuthTypes.AUTH_SUCCCES:
+        case AuthTypes.AUTH_SUCCCESS:
             return {
-                ...state,
                 user: action.payload.user,
                 token: action.payload.token,
+                refreshToken: action.payload.refreshToken,
                 isAuthenticated: true,
                 loading: false,
                 error: false,
             };
         case AuthTypes.AUTH_FAILURE:
             return {
-                ...state,
                 user: null,
                 token: null,
+                refreshToken: null,
                 isAuthenticated: false,
                 loading: false,
                 error: true,
@@ -35,6 +36,7 @@ const reducer: Reducer<AuthState> = (state = INITIAL_STATE, action) => {
             return {
                 user: null,
                 token: null,
+                refreshToken: null,
                 isAuthenticated: false,
                 loading: false,
                 error: false,

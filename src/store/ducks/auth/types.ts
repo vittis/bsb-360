@@ -3,7 +3,7 @@
  */
 export enum AuthTypes {
     AUTH_REQUEST = '@auth/AUTH_REQUEST',
-    AUTH_SUCCCES = '@auth/AUTH_SUCCCES',
+    AUTH_SUCCCESS = '@auth/AUTH_SUCCCESS',
     AUTH_FAILURE = '@auth/AUTH_FAILURE',
     SIGN_OUT = '@auth/SIGN_OUT',
 }
@@ -23,6 +23,7 @@ export interface AuthDTO {
 export interface AuthRO {
     user: User;
     token: string;
+    refreshToken: string;
 }
 
 /**
@@ -31,6 +32,7 @@ export interface AuthRO {
 export interface AuthState {
     readonly user: User;
     readonly token: string;
+    readonly refreshToken: string;
     readonly isAuthenticated: boolean;
     readonly loading: boolean;
     readonly error: boolean;

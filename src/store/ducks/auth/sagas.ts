@@ -6,7 +6,7 @@ import { AuthRO } from './types';
 import { authSuccess, authFailure, authRequest, authSignOut } from './actions';
 
 // @todo: for dev testing purposes
-const delay = ms => new Promise(res => setTimeout(res, ms));
+// const delay = ms => new Promise(res => setTimeout(res, ms));
 
 export function* signIn(action: ReturnType<typeof authRequest>) {
     try {
@@ -16,6 +16,7 @@ export function* signIn(action: ReturnType<typeof authRequest>) {
             action.payload
         );
         yield call(AsyncStorage.setItem, 'token', response.data.token);
+        yield call(AsyncStorage.setItem, 'refreshToken', response.data.token);
 
         yield put(authSuccess(response.data));
         // @todo: for dev testing purposes
@@ -35,4 +36,5 @@ export function* signIn(action: ReturnType<typeof authRequest>) {
 
 export function* signOut(_action: ReturnType<typeof authSignOut>) {
     yield call(AsyncStorage.removeItem, 'token');
+    yield call(AsyncStorage.removeItem, 'refreshToken');
 }
