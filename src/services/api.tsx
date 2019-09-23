@@ -8,6 +8,7 @@ import { ApplicationState } from '../store';
 
 const api = axios.create({
     baseURL: 'http://10.0.2.2:3030/api',
+    headers: { Pragma: 'no-cache', 'cache-control': 'no-cache' },
 });
 
 const UNAUTHORIZED = 401;
@@ -25,8 +26,6 @@ export const setupInterceptors = (store: Store<ApplicationState>) => {
                 null
             );
             if (newToken && newRefreshToken) {
-                //@todo: verify response tokens cache
-                /* console.log('setting tokens');
                 const { auth } = getState();
                 dispatch(
                     authSuccess({
@@ -34,12 +33,11 @@ export const setupInterceptors = (store: Store<ApplicationState>) => {
                         token: newToken,
                         refreshToken: newRefreshToken,
                     })
-                ); */
+                );
             }
             return response;
         },
         error => {
-            console.log('errowww');
             const { status } = error.response;
             if (status === UNAUTHORIZED) {
                 console.log('UNAUTHORIZED');
