@@ -17,6 +17,7 @@ const BAD_REQUEST = 400;
 export const setupInterceptors = (store: Store<ApplicationState>) => {
     const { dispatch, getState } = store;
 
+    /* Refresh auth logic */
     api.interceptors.response.use(
         response => {
             const newToken = get(response, 'headers.x-token', null);
@@ -50,6 +51,7 @@ export const setupInterceptors = (store: Store<ApplicationState>) => {
         }
     );
 
+    /* Add Bearer token to every request, if available */
     api.interceptors.request.use(config => {
         const { auth } = getState();
         if (!auth.token || !auth.refreshToken) {
