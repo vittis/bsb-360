@@ -17,8 +17,8 @@ const BAD_REQUEST = 400;
 export const setupInterceptors = (store: Store<ApplicationState>) => {
     const { dispatch, getState } = store;
 
-    /* Refresh auth logic */
     api.interceptors.response.use(
+        /* Refresh auth logic */
         response => {
             const newToken = get(response, 'headers.x-token', null);
             const newRefreshToken = get(
@@ -38,6 +38,7 @@ export const setupInterceptors = (store: Store<ApplicationState>) => {
             }
             return response;
         },
+        /* Deal with response errors */
         error => {
             const { status } = error.response;
             if (status === UNAUTHORIZED) {
