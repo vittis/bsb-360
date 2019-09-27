@@ -1,19 +1,52 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import * as Google from 'expo-google-app-auth';
 import { NavigationScreenProps, StackActions } from 'react-navigation';
 import { Formik } from 'formik';
-import { Ionicons, Entypo } from '@expo/vector-icons';
+import { Ionicons, Entypo, Octicons } from '@expo/vector-icons';
 import { AsyncStorage } from 'react-native';
 import api from '../../services/api';
 import { Button } from '../../shared/Button';
 import { TextInput } from '../../shared/TextInput';
+import { HelperText } from 'react-native-paper';
+import * as Yup from 'yup';
 import { Flex } from '../../shared/Flex';
+import { useAuth } from '../../store/ducks/auth/hooks';
+import { useError } from '../../store/ducks/error/hooks';
 
 SignUp.navigationOptions = {
     title: 'Sign Up',
 };
 
+const SignUpSchema = Yup.object().shape({
+    email: Yup.string()
+        .email('Invalid email format')
+        .required('Email is required'),
+    password: Yup.string()
+        .min(6, 'Invalid password, minimum length: 6')
+        .required('Password is required'),
+    confirmPassword: Yup.string()
+        .oneOf([Yup.ref('password'), null], 'Passwords must match')
+        .required('Password confirm is required'),
+});
+
 function SignUp(props: NavigationScreenProps) {
+    const { auth, authSignUpRequest } = useAuth();
+    const { error } = useError();
+
+    useEffect(() => {
+        if (auth.user) {
+            onSignUpSuccess();
+        }
+    }, [auth]);
+
+    /**
+     * Called after successful register
+     *
+     */
+    async function onSignUpSuccess() {
+        props.navigation.navigate('App');
+    }
+
     /**
      * Handler Google Sign In button
      */
@@ -45,52 +78,100 @@ function SignUp(props: NavigationScreenProps) {
 
     return (
         <Formik
-            initialValues={{ username: '', password: '', confirmPassword: '' }}
-            onSubmit={values => console.log(values)}
+            validationSchema={SignUpSchema}
+            validateOnChange={false}
+            validateOnBlur={false}
+            initialValues={{ email: '', password: '', confirmPassword: '' }}
+            onSubmit={values => {
+                authSignUpRequest({
+                    email: values.email,
+                    password: values.password,
+                });
+            }}
         >
-            {formikProps => (
+            {({ values, handleChange, handleBlur, handleSubmit, errors }) => (
                 <Flex flex={1} alignItems="center" padding={3} mt={2}>
-                    <Entypo name="paper-plane" size={80} color="#6200ee" />
+                    <Octicons name="globe" size={85} color="#6200ee" />
 
-                    {/* Username Input */}
+                    {/* Email Input */}
                     <TextInput
-                        label="username"
-                        onChangeText={formikProps.handleChange('username')}
-                        onBlur={formikProps.handleBlur('username')}
-                        value={formikProps.values.username}
-                        autoCompleteType="username"
+                        label="email"
+                        error={
+                            errors.email || error.requestError ? true : false
+                        }
+                        onChangeText={handleChange('email')}
+                        onBlur={handleBlur('email')}
+                        value={values.email}
+                        autoCompleteType="off"
+                        autoCorrect={false}
+                        autoFocus
                         fullWidth
-                        mb={3}
+                        mt={4}
                     />
+                    {errors.email && (
+                        <HelperText
+                            type="error"
+                            visible={errors.email ? true : false}
+                        >
+                            {errors.email}
+                        </HelperText>
+                    )}
 
-                    {/* Password Input */}
+                    {/* Passwrod Input */}
                     <TextInput
                         label="password"
-                        onChangeText={formikProps.handleChange('password')}
-                        onBlur={formikProps.handleBlur('password')}
-                        value={formikProps.values.password}
+                        error={
+                            errors.password || error.requestError ? true : false
+                        }
+                        onChangeText={handleChange('password')}
+                        onBlur={handleBlur('password')}
+                        value={values.password}
                         secureTextEntry
                         fullWidth
-                        mb={3}
+                        mt={3}
+                        mb={1}
                     />
+                    {errors.password && (
+                        <HelperText
+                            type="error"
+                            visible={errors.password ? true : false}
+                        >
+                            {errors.password}
+                        </HelperText>
+                    )}
 
-                    {/* Confirm Password Input */}
+                    {/* Confirm Passwrod Input */}
                     <TextInput
                         label="confirm password"
-                        onChangeText={formikProps.handleChange(
-                            'confirmPassword'
-                        )}
-                        onBlur={formikProps.handleBlur('confirmPassword')}
-                        value={formikProps.values.confirmPassword}
+                        error={
+                            errors.confirmPassword || error.requestError
+                                ? true
+                                : false
+                        }
+                        onChangeText={handleChange('confirmPassword')}
+                        onBlur={handleBlur('confirmPassword')}
+                        value={values.confirmPassword}
                         secureTextEntry
                         fullWidth
-                        mb={4}
+                        mt={3}
+                        mb={1}
                     />
+                    {errors.confirmPassword && (
+                        <HelperText
+                            type="error"
+                            visible={errors.confirmPassword ? true : false}
+                        >
+                            {errors.confirmPassword}
+                        </HelperText>
+                    )}
 
                     {/* Create Account Button */}
                     <Button
                         mode="contained"
-                        onPress={formikProps.handleSubmit as any}
+                        onPress={handleSubmit as any}
+                        disabled={auth.loading}
+                        loading={auth.loading}
+                        mt={4}
                         mb={3}
                         width={1}
                     >
@@ -135,7 +216,7 @@ function SignUp(props: NavigationScreenProps) {
                                     />
                                 )}
                                 mode="outlined"
-                                onPress={handleSignInWithGoogle}
+                                onPress={() => {}}
                             >
                                 Facebook
                             </Button>

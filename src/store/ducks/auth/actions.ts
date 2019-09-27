@@ -1,8 +1,11 @@
 import { action } from 'typesafe-actions';
-import { AuthTypes, AuthRO, AuthDTO } from './types';
+import { AuthTypes, AuthRO, AuthSignInDTO, AuthSignUpDTO } from './types';
 
-export const authRequest = (payload: AuthDTO) =>
-    action(AuthTypes.AUTH_REQUEST, payload);
+export const authSignInRequest = (payload: AuthSignInDTO) =>
+    action(AuthTypes.AUTH_SIGN_IN_REQUEST, payload);
+
+export const authSignUpRequest = (payload: AuthSignUpDTO) =>
+    action(AuthTypes.AUTH_SIGN_UP_REQUEST, payload);
 
 export const authSuccess = (response: AuthRO) =>
     action(AuthTypes.AUTH_SUCCCESS, {

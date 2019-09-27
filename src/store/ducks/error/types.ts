@@ -11,4 +11,5 @@ export enum ErrorTypes {
  */
 export interface ErrorState {
     readonly requestError: boolean;
+    readonly message: string;
 }

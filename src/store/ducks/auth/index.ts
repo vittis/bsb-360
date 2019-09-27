@@ -12,7 +12,9 @@ const INITIAL_STATE: AuthState = {
 
 const reducer: Reducer<AuthState> = (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        case AuthTypes.AUTH_REQUEST:
+        case AuthTypes.AUTH_SIGN_IN_REQUEST:
+            return { ...state, error: false, loading: true };
+        case AuthTypes.AUTH_SIGN_UP_REQUEST:
             return { ...state, error: false, loading: true };
         case AuthTypes.AUTH_SUCCCESS:
             return {

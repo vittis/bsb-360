@@ -3,6 +3,7 @@ import { ErrorState, ErrorTypes } from './types';
 
 const INITIAL_STATE: ErrorState = {
     requestError: false,
+    message: null,
 };
 
 const reducer: Reducer<ErrorState> = (state = INITIAL_STATE, action) => {
@@ -10,11 +11,12 @@ const reducer: Reducer<ErrorState> = (state = INITIAL_STATE, action) => {
         case ErrorTypes.SET_ERROR:
             return {
                 requestError: true,
+                message: action.payload,
             };
-        case ErrorTypes.CLEAR_ERROR:
-            console.log('clear this shit');
+        case ErrorTypes.CLEAR_ERRORS:
             return {
                 requestError: false,
+                message: null,
             };
         default:
             return state;

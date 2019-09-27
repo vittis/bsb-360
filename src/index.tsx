@@ -35,7 +35,7 @@ const Error = () => {
                 },
             }}
         >
-            Something went wrong...
+            {error.message ? error.message : 'Something went wrong...'}
         </Snackbar>
     );
 };

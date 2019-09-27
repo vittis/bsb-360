@@ -27,7 +27,7 @@ const SignInSchema = Yup.object().shape({
 function SignIn(props: NavigationScreenProps) {
     const [showPlaneIcon, setShowPlaneIcon] = useState(false);
 
-    const { auth, authRequest } = useAuth();
+    const { auth, authSignInRequest } = useAuth();
     const { error } = useError();
 
     useEffect(() => {
@@ -84,7 +84,7 @@ function SignIn(props: NavigationScreenProps) {
             validateOnBlur={false}
             initialValues={{ email: '', password: '' }}
             onSubmit={values => {
-                authRequest(values);
+                authSignInRequest(values);
             }}
         >
             {({ values, handleChange, handleBlur, handleSubmit, errors }) => (

@@ -41,12 +41,14 @@ export const setupInterceptors = (store: Store<ApplicationState>) => {
         /* Deal with response errors */
         error => {
             const { status } = error.response;
+            const { message } = error.response.data;
+            console.log(message);
             if (status === UNAUTHORIZED) {
                 console.log('UNAUTHORIZED');
                 dispatch(authSignOut());
             } else if (status === BAD_REQUEST) {
                 console.log('BAD_REQUEST');
-                dispatch(setError());
+                dispatch(setError(message ? message : null));
             }
             return Promise.reject(error);
         }

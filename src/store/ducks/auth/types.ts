@@ -2,7 +2,8 @@
  * Action types
  */
 export enum AuthTypes {
-    AUTH_REQUEST = '@auth/AUTH_REQUEST',
+    AUTH_SIGN_IN_REQUEST = '@auth/AUTH_SIGN_IN_REQUEST',
+    AUTH_SIGN_UP_REQUEST = '@auth/AUTH_SIGN_UP_REQUEST',
     AUTH_SUCCCESS = '@auth/AUTH_SUCCCESS',
     AUTH_FAILURE = '@auth/AUTH_FAILURE',
     SIGN_OUT = '@auth/SIGN_OUT',
@@ -15,7 +16,12 @@ export interface User {
     email: string;
 }
 
-export interface AuthDTO {
+export interface AuthSignInDTO {
+    email: string;
+    password: string;
+}
+
+export interface AuthSignUpDTO {
     email: string;
     password: string;
 }
