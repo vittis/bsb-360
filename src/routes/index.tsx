@@ -76,7 +76,7 @@ function TabBarIcon(props) {
             name={props.name}
             size={26}
             style={{ marginBottom: -3 }}
-            color={props.focused ? '#2f95dc' : '#ccc'}
+            color={props.focused ? '#6200ee' : '#ccc'}
         />
     );
 }
