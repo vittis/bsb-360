@@ -3,7 +3,6 @@ import { NavigationScreenProps } from 'react-navigation';
 import styled from 'styled-components/native';
 import MapView from 'react-native-maps';
 import { Platform } from 'react-native';
-import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import { ActivityIndicator } from 'react-native-paper';
