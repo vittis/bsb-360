@@ -1,16 +1,15 @@
-import React, { useEffect, useState, useRef, Component } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { NavigationScreenProps } from 'react-navigation';
 import styled from 'styled-components/native';
 import MapView from 'react-native-maps';
-import { Platform } from 'react-native';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import { ActivityIndicator } from 'react-native-paper';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function Home(props: NavigationScreenProps) {
+function Home() {
     const [location, setLocation] = useState(null);
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [, setErrorMessage] = useState(null);
 
     useEffect(() => {
         _getLocationAsync();
