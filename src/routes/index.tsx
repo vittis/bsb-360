@@ -11,8 +11,10 @@ import SignUp from '../screens/SignUp';
 import { Platform } from 'react-native';
 import AuthLoading from '../screens/AuthLoading';
 import styled from 'styled-components/native';
-import { Octicons, Ionicons } from '@expo/vector-icons';
+import { Octicons, Ionicons, Foundation } from '@expo/vector-icons';
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import withAuthRoute from './withAuthRoute';
+import Profile from '../screens/Profile';
 
 const LogoText = styled.Text`
     margin-left: 10px;
@@ -57,7 +59,7 @@ const AppStack = createStackNavigator(
         },
     }
 );
-AppStack.navigationOptions = {
+/* AppStack.navigationOptions = {
     tabBarLabel: 'Home',
     tabBarIcon: ({ focused }) => (
         <TabBarIcon
@@ -69,17 +71,7 @@ AppStack.navigationOptions = {
             }
         />
     ),
-};
-function TabBarIcon(props) {
-    return (
-        <Ionicons
-            name={props.name}
-            size={26}
-            style={{ marginBottom: -3 }}
-            color={props.focused ? '#6200ee' : '#ccc'}
-        />
-    );
-}
+}; */
 
 /**
  * Auth Stack
@@ -99,9 +91,45 @@ const AuthStack = createStackNavigator(
     }
 );
 
-const tabNavigator = createBottomTabNavigator({
-    AppStack,
-});
+function TabBarIcon(props) {
+    return (
+        <Ionicons
+            name={props.name}
+            size={26}
+            style={{ marginBottom: -3 }}
+            color={props.focused ? '#fff' : '#ccc'}
+        />
+    );
+}
+
+const tabNavigator = createMaterialBottomTabNavigator(
+    {
+        Home: AppStack,
+        Profile,
+    },
+    {
+        defaultNavigationOptions: ({ navigation }) => ({
+            tabBarIcon: ({ focused, tintColor }) => {
+                const { routeName } = navigation.state;
+                let iconName;
+                if (routeName === 'Home') {
+                    iconName = 'md-map';
+                } else if (routeName === 'Profile') {
+                    iconName = `ios-person`;
+                }
+
+                return (
+                    <TabBarIcon
+                        focused={focused}
+                        name={iconName}
+                        size={25}
+                        color={tintColor}
+                    />
+                );
+            },
+        }),
+    }
+);
 
 export default createAppContainer(
     createSwitchNavigator(

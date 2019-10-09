@@ -4,20 +4,26 @@ import styled from 'styled-components/native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import { ActivityIndicator } from 'react-native-paper';
+import { ActivityIndicator, Surface, FAB } from 'react-native-paper';
 import { StyleSheet, Dimensions, View, Text } from 'react-native';
+import SlidingUpPanel from 'rn-sliding-up-panel';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Button } from '../../shared/Button';
+import { Ionicons, Foundation } from '@expo/vector-icons';
+
+const { width, height } = Dimensions.get('window');
+
 function Home() {
     const [location, setLocation] = useState(null);
     const [error, setErrorMessage] = useState(null);
+    const [fabVisible, setFabVisible] = useState(true);
 
     const [places, setPlaces] = useState([
         {
             id: 1,
             title: 'Nova Nicolândia',
             description:
-                'Parque de diversões colorido com montanhas-russas, carrossel e roda gigante, além de vendedores de alimentos.',
+                'Parque de diversões asd asd asd sadasdas dishfpoiadshfpo uiashdfói hasd´0fh a´sdfh a´sdif hS colorido com montanhas-russas, carrossel e roda gigante, além de vendedores de alimentos.',
             latitude: -15.7961574,
             longitude: -47.9014396,
             mark: null,
@@ -50,6 +56,8 @@ function Home() {
     ]);
 
     const mapView = useRef<MapView>(null);
+    const slidingUpPanel = useRef<SlidingUpPanel>(null);
+    const scrollView = useRef<ScrollView>(null);
 
     useEffect(() => {
         _getLocationAsync();
@@ -99,11 +107,19 @@ function Home() {
                         });
                     }} */
                     >
-                        {places.map(place => (
+                        {places.map((place, index) => (
                             <Marker
                                 ref={mark => (place.mark = mark)}
                                 title={place.title}
-                                description={place.description}
+                                onPress={() => {
+                                    slidingUpPanel.current.show();
+                                    scrollView.current.scrollTo({
+                                        x: width * index,
+                                        y: 0,
+                                        animated: true,
+                                    });
+                                }}
+                                //description={place.description}
                                 key={place.id}
                                 coordinate={{
                                     latitude: place.latitude,
@@ -112,42 +128,85 @@ function Home() {
                             />
                         ))}
                     </MapView>
-                    <ScrollView
-                        style={styles.placesContainer}
-                        horizontal
-                        pagingEnabled
-                        showsHorizontalScrollIndicator={false}
-                        onMomentumScrollEnd={e => {
-                            const place =
-                                e.nativeEvent.contentOffset.x > 0
-                                    ? e.nativeEvent.contentOffset.x /
-                                      Dimensions.get('window').width
-                                    : 0;
-                            const { latitude, longitude, mark } = places[
-                                Math.round(place)
-                            ];
 
-                            mapView.current.animateCamera(
-                                {
-                                    center: { latitude, longitude },
-                                },
-                                { duration: 500 }
-                            );
-
-                            setTimeout(() => {
-                                mark.showCallout();
-                            }, 500);
+                    <SlidingUpPanel
+                        draggableRange={{ top: height / 2.6, bottom: 0 }}
+                        //animatedValue={this._draggedValue}
+                        showBackdrop={false}
+                        ref={slidingUpPanel}
+                        allowMomentum={true}
+                        onMomentumDragEnd={value => {
+                            if (value < 70) {
+                                if (!fabVisible) setFabVisible(true);
+                            } else {
+                                if (fabVisible) setFabVisible(false);
+                            }
+                        }}
+                        onDragEnd={value => {
+                            if (value < 70) {
+                                if (!fabVisible) setFabVisible(true);
+                            } else {
+                                if (fabVisible) setFabVisible(false);
+                            }
                         }}
                     >
-                        {places.map(place => (
-                            <View key={place.id} style={styles.place}>
-                                <Text style={styles.title}>{place.title}</Text>
-                                <Text style={styles.description}>
-                                    {place.description}
-                                </Text>
-                            </View>
-                        ))}
-                    </ScrollView>
+                        <ScrollView
+                            ref={scrollView}
+                            style={styles.placesContainer}
+                            horizontal
+                            pagingEnabled
+                            showsHorizontalScrollIndicator={false}
+                            onMomentumScrollEnd={e => {
+                                const place =
+                                    e.nativeEvent.contentOffset.x > 0
+                                        ? e.nativeEvent.contentOffset.x /
+                                          Dimensions.get('window').width
+                                        : 0;
+                                const { latitude, longitude, mark } = places[
+                                    Math.round(place)
+                                ];
+
+                                mapView.current.animateCamera(
+                                    {
+                                        center: { latitude, longitude },
+                                    },
+                                    { duration: 500 }
+                                );
+
+                                setTimeout(() => {
+                                    mark.showCallout();
+                                }, 500);
+                            }}
+                        >
+                            {places.map(place => (
+                                <Surface key={place.id} style={styles.place}>
+                                    <Text style={styles.title}>
+                                        {place.title}
+                                    </Text>
+                                    <Text style={styles.description}>
+                                        {place.description}
+                                    </Text>
+                                </Surface>
+                            ))}
+                        </ScrollView>
+                    </SlidingUpPanel>
+                    <FAB
+                        style={styles.fab}
+                        visible={fabVisible}
+                        icon={({ color, size }) => (
+                            <Container>
+                                <Foundation
+                                    size={size + 5}
+                                    name="marker"
+                                    color={color}
+                                />
+                            </Container>
+                        )}
+                        onPress={() => {
+                            slidingUpPanel.current.show();
+                            setFabVisible(false);
+                        }}
+                    />
                 </>
             )}
         </Container>
@@ -159,13 +218,21 @@ const Container = styled.View`
     justify-content: center;
     align-items: center;
 `;
-const { height, width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#6200ee',
+    },
+
     container: {
         flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'flex-end',
+        backgroundColor: 'white',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 
     mapView: {
@@ -182,12 +249,12 @@ const styles = StyleSheet.create({
     },
 
     place: {
-        width: width - 40,
+        width: width - 32,
         backgroundColor: '#FFF',
-        marginHorizontal: 20,
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-        padding: 20,
+        marginHorizontal: 16,
+        borderRadius: 6,
+        padding: 15,
+        elevation: 3,
     },
 
     title: {
