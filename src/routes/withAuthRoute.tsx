@@ -6,7 +6,7 @@ const withAuthRoute = WrappedScreen => (props: NavigationScreenProps) => {
     const { auth } = useAuth();
 
     useEffect(() => {
-        if (!auth.isAuthenticated) {
+        if (auth.isAuthenticated) {
             props.navigation.navigate('Auth');
         }
     }, [auth.isAuthenticated]);

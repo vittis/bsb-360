@@ -16,9 +16,17 @@ import {
 } from 'react-native';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 
-import { Foundation } from '@expo/vector-icons';
+import { Foundation, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Flex } from '../../shared/Flex';
 import { Button } from '../../shared/Button';
+import {
+    space,
+    SpaceProps,
+    color,
+    ColorProps,
+    typography,
+    TypographyProps,
+} from 'styled-system';
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
 
@@ -33,6 +41,7 @@ interface Place {
     latitude: number;
     longitude: number;
     mark: Marker;
+    image: string;
 }
 
 function Home() {
@@ -45,18 +54,23 @@ function Home() {
             id: 1,
             title: 'Nova Nicolândia',
             description:
-                'Parque de diversões asd asd asd sadasdas dishfpoiadshfpo uiashdfói hasd´0fh a´sdfh a´sdif hS colorido com montanhas-russas, carrossel e roda gigante, além de vendedores de alimentos.',
+                'Parque de diversões colorido com montanhas-russas, carrossel e roda gigante, além de vendedores de alimentos.',
             latitude: -15.7961574,
             longitude: -47.9014396,
             mark: null,
+            image:
+                'https://img.stpu.com.br/?img=https://s3.amazonaws.com/pu-mgr/default/a0RG000000sOFt1MAG/59f87532e4b070f33289d54a.jpg&w=710&h=462',
         },
         {
             id: 2,
-            title: 'Fonte da Torre de TV',
-            description: 'Fonte da torre de tv.',
+            title: 'Fonte da Torre',
+            description:
+                'Um show de águas coloridas e sincronizadas pode ser visto na Fonte Luminosa da Torre de TV.',
             latitude: -15.7918274,
             longitude: -47.8916544,
             mark: null,
+            image:
+                'https://i2.wp.com/fogocruzadodf.com.br/wp-content/uploads/2018/06/torre-de-tv.jpg?fit=900%2C600&ssl=1',
         },
         {
             id: 3,
@@ -65,6 +79,8 @@ function Home() {
             latitude: -15.7953534,
             longitude: -47.8906947,
             mark: null,
+            image:
+                'https://i1.wp.com/brasiliadefato.com.br/wp-content/uploads/2018/10/esplanadadosministerios.jpg?resize=990%2C556&ssl=1',
         },
         {
             id: 4,
@@ -74,6 +90,8 @@ function Home() {
             latitude: -15.7927375,
             longitude: -47.8821088,
             mark: null,
+            image:
+                'https://upload.wikimedia.org/wikipedia/commons/7/78/Pal%C3%A1cio_do_Planalto_GGFD8938.jpg',
         },
     ]);
 
@@ -112,7 +130,7 @@ function Home() {
         mapView.current.animateCamera(
             {
                 center: {
-                    latitude: latitude - 0.02,
+                    latitude: latitude - 0.01,
                     longitude,
                 },
             },
@@ -139,7 +157,7 @@ function Home() {
         mapView.current.animateCamera(
             {
                 center: {
-                    latitude: latitude - 0.015,
+                    latitude: latitude - 0.01,
                     longitude,
                 },
             },
@@ -169,7 +187,7 @@ function Home() {
                         style={styles.mapView}
                         rotateEnabled={false}
                         scrollEnabled={true}
-                        zoomEnabled={true}
+                        zoomEnabled={false}
                         showsBuildings={false}
                         showsPointsOfInterest={false}
                     >
@@ -200,6 +218,7 @@ function Home() {
                         allowMomentum={true}
                         onMomentumDragEnd={onPlacesPanelDragEnd}
                         onDragEnd={onPlacesPanelDragEnd}
+                        allowDragging={true} // todo verificar solucao de conflito scroll
                     >
                         <PlacesContainer
                             ref={scrollView}
@@ -211,12 +230,85 @@ function Home() {
                             {places.map(place => (
                                 <Place key={place.id}>
                                     <PlaceImage
-                                        source={require('../../assets/torredetv.png')}
+                                        style={{
+                                            width: '100%',
+                                            height: windowHeight * 0.2375,
+                                        }}
+                                        source={{
+                                            uri: place.image,
+                                        }}
                                     />
-                                    <Flex p={3}>
-                                        <Text style={styles.title}>
-                                            {place.title}
-                                        </Text>
+                                    <Flex px={3} py={2} width={1}>
+                                        <Flex
+                                            flexDirection="row"
+                                            justifyContent="space-between"
+                                            width={1}
+                                        >
+                                            <Flex
+                                                flexDirection="row"
+                                                alignItems="center"
+                                                justifyContent="space-between"
+                                                width={1}
+                                            >
+                                                <Flex
+                                                    flexDirection="row"
+                                                    alignItems="center"
+                                                >
+                                                    <MaterialCommunityIcons
+                                                        size={18}
+                                                        color="#6200ee"
+                                                        name="map-marker-radius"
+                                                    />
+                                                    <PlaceLabel
+                                                        fontSize={16}
+                                                        fontWeight="bold"
+                                                        //ml={1}
+                                                    >
+                                                        {place.title}
+                                                    </PlaceLabel>
+                                                </Flex>
+                                                <Flex
+                                                    flexDirection="row"
+                                                    alignItems="center"
+                                                >
+                                                    <MaterialCommunityIcons
+                                                        size={18}
+                                                        //color="#6200ee"
+                                                        color="#6200ee"
+                                                        name="star-circle"
+                                                    />
+                                                    <PlaceLabel
+                                                        fontSize={14}
+                                                        fontWeight="bold"
+                                                        // ml={1}
+                                                        color="#000"
+                                                    >
+                                                        10 pts
+                                                    </PlaceLabel>
+                                                </Flex>
+                                                <Flex
+                                                    flexDirection="row"
+                                                    alignItems="center"
+                                                >
+                                                    <MaterialCommunityIcons
+                                                        size={18}
+                                                        //color="#6200ee"
+                                                        color="#6200ee"
+                                                        name="run"
+                                                    />
+                                                    <PlaceLabel
+                                                        fontSize={14}
+                                                        fontWeight="bold"
+                                                        // ml={1}
+                                                        color="#000"
+                                                    >
+                                                        5.5 km
+                                                    </PlaceLabel>
+                                                </Flex>
+                                            </Flex>
+                                            <Flex>{/* <Text>a</Text> */}</Flex>
+                                        </Flex>
+
                                         <Text style={styles.description}>
                                             {place.description}
                                         </Text>
@@ -225,12 +317,27 @@ function Home() {
                                         display="flex"
                                         position="absolute"
                                         bottom={0}
-                                        alignItems="center"
+                                        //alignItems="center"
+                                        px={3}
                                         justifyContent="center"
                                         width={1}
                                     >
-                                        <Button mb={1} onPress={() => {}}>
-                                            Fazer check-in
+                                        <Button
+                                            mode="contained"
+                                            icon={({
+                                                size,
+                                                color: iconColor,
+                                            }) => (
+                                                <MaterialCommunityIcons
+                                                    size={size}
+                                                    color={iconColor}
+                                                    name="map-marker-plus"
+                                                />
+                                            )}
+                                            mb={2}
+                                            onPress={() => {}}
+                                        >
+                                            check-in
                                         </Button>
                                     </Flex>
                                 </Place>
@@ -240,12 +347,12 @@ function Home() {
                     <FAB
                         style={styles.fab}
                         visible={fabVisible}
-                        icon={({ color, size }) => (
+                        icon={({ color: iconColor, size }) => (
                             <Container>
                                 <Foundation
                                     size={size + 5}
                                     name="marker"
-                                    color={color}
+                                    color={iconColor}
                                 />
                             </Container>
                         )}
@@ -258,7 +365,7 @@ function Home() {
                             mapView.current.animateCamera(
                                 {
                                     center: {
-                                        latitude: latitude - 0.015,
+                                        latitude: latitude - 0.01,
                                         longitude,
                                     },
                                 },
@@ -292,14 +399,26 @@ const Place = styled.View`
     position: relative;
 `;
 
+const PlaceLabel = styled.Text<SpaceProps & ColorProps & TypographyProps>`
+    ${space}
+    ${color}
+    ${typography}
+    /* font-weight: bold;
+    font-size: 18; */
+    background-color: transparent;
+`;
+
 const PlaceImage = styled.Image`
     width: 100%;
-    max-height: 150;
+    max-height: ${windowHeight * 0.2375};
     /* border-top-left-radius: 8;
     border-top-right-radius: 8; */
 `;
 
 const styles = StyleSheet.create({
+    sefode: {
+        marginRight: 10,
+    },
     fab: {
         position: 'absolute',
         margin: 16,
@@ -316,16 +435,11 @@ const styles = StyleSheet.create({
         right: 0,
     },
 
-    title: {
-        fontWeight: 'bold',
-        fontSize: 18,
-        backgroundColor: 'transparent',
-    },
-
     description: {
         color: '#999',
-        fontSize: 12,
+        fontSize: 13,
         marginTop: 5,
+        textAlign: 'justify',
     },
 });
 
