@@ -59,19 +59,9 @@ const AppStack = createStackNavigator(
         },
     }
 );
-/* AppStack.navigationOptions = {
-    tabBarLabel: 'Home',
-    tabBarIcon: ({ focused }) => (
-        <TabBarIcon
-            focused={focused}
-            name={
-                Platform.OS === 'ios'
-                    ? `ios-information-circle${focused ? '' : '-outline'}`
-                    : 'md-information-circle'
-            }
-        />
-    ),
-}; */
+AppStack.navigationOptions = {
+    tabBarLabel: 'Início',
+};
 
 /**
  * Auth Stack
@@ -104,7 +94,7 @@ function TabBarIcon(props) {
 
 const tabNavigator = createMaterialBottomTabNavigator(
     {
-        Home: AppStack,
+        AppStack,
         Profile,
     },
     {
@@ -112,7 +102,8 @@ const tabNavigator = createMaterialBottomTabNavigator(
             tabBarIcon: ({ focused, tintColor }) => {
                 const { routeName } = navigation.state;
                 let iconName;
-                if (routeName === 'Home') {
+
+                if (routeName === 'AppStack') {
                     iconName = 'md-map';
                 } else if (routeName === 'Profile') {
                     iconName = `ios-person`;

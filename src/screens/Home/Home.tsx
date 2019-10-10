@@ -1,24 +1,46 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { NavigationScreenProps, ScrollView } from 'react-navigation';
+import { ScrollView } from 'react-navigation';
 import styled from 'styled-components/native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, MapEvent } from 'react-native-maps';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import { ActivityIndicator, Surface, FAB } from 'react-native-paper';
-import { StyleSheet, Dimensions, View, Text } from 'react-native';
+import { ActivityIndicator, FAB } from 'react-native-paper';
+import {
+    StyleSheet,
+    Dimensions,
+    View,
+    Text,
+    Image,
+    NativeSyntheticEvent,
+    NativeScrollEvent,
+} from 'react-native';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 
+import { Foundation } from '@expo/vector-icons';
+import { Flex } from '../../shared/Flex';
 import { Button } from '../../shared/Button';
-import { Ionicons, Foundation } from '@expo/vector-icons';
 
-const { width, height } = Dimensions.get('window');
+const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
+
+Home.navigationOptions = {
+    title: 'opora',
+};
+
+interface Place {
+    id: number;
+    title: string;
+    description: string;
+    latitude: number;
+    longitude: number;
+    mark: Marker;
+}
 
 function Home() {
     const [location, setLocation] = useState(null);
     const [error, setErrorMessage] = useState(null);
     const [fabVisible, setFabVisible] = useState(true);
 
-    const [places, setPlaces] = useState([
+    const [places, setPlaces] = useState<Place[]>([
         {
             id: 1,
             title: 'Nova Nicolândia',
@@ -30,7 +52,7 @@ function Home() {
         },
         {
             id: 2,
-            title: 'Fonte da Torre',
+            title: 'Fonte da Torre de TV',
             description: 'Fonte da torre de tv.',
             latitude: -15.7918274,
             longitude: -47.8916544,
@@ -63,7 +85,7 @@ function Home() {
         _getLocationAsync();
     }, []);
 
-    const _getLocationAsync = async () => {
+    async function _getLocationAsync() {
         let { status } = await Permissions.askAsync(Permissions.LOCATION);
         if (status !== 'granted') {
             setErrorMessage('Permission to access location was denied');
@@ -71,10 +93,64 @@ function Home() {
 
         let loc = await Location.getCurrentPositionAsync({});
         setLocation(loc);
-    };
-    /*  const _mapReady = () => {
-        places[0].mark.showCallout();
-    }; */
+    }
+
+    function onPlacesPanelDragEnd(value: number) {
+        if (value < 70) {
+            if (!fabVisible) setFabVisible(true);
+            places.forEach(p => {
+                p.mark.hideCallout();
+            });
+        } else {
+            if (fabVisible) setFabVisible(false);
+        }
+    }
+
+    function onMarkerPress(markerData: MapEvent, index: number) {
+        if (fabVisible) setFabVisible(false);
+        const { latitude, longitude } = markerData.nativeEvent.coordinate;
+        mapView.current.animateCamera(
+            {
+                center: {
+                    latitude: latitude - 0.02,
+                    longitude,
+                },
+            },
+            { duration: 500 }
+        );
+        slidingUpPanel.current.show();
+        scrollView.current.scrollTo({
+            x: windowWidth * index,
+            y: 0,
+            animated: true,
+        });
+    }
+
+    function onPlacesMomentumScrollEnd(
+        e: NativeSyntheticEvent<NativeScrollEvent>
+    ) {
+        const place =
+            e.nativeEvent.contentOffset.x > 0
+                ? e.nativeEvent.contentOffset.x / windowWidth
+                : 0;
+
+        const { latitude, longitude, mark } = places[Math.round(place)];
+
+        mapView.current.animateCamera(
+            {
+                center: {
+                    latitude: latitude - 0.015,
+                    longitude,
+                },
+            },
+            { duration: 500 }
+        );
+
+        setTimeout(() => {
+            mark.showCallout();
+        }, 500);
+    }
+
     return (
         <Container>
             {!location && <ActivityIndicator size="large" />}
@@ -83,42 +159,27 @@ function Home() {
                     <MapView
                         ref={mapView}
                         showsUserLocation
-                        region={{
-                            /* latitude: this.props.location.coords.latitude,
-                        longitude: this.props.location.coords.longitude, */
+                        moveOnMarkerPress={false}
+                        initialRegion={{
                             latitude: location.coords.latitude,
                             longitude: location.coords.longitude,
                             latitudeDelta: 0.0922,
                             longitudeDelta: 0.0421,
                         }}
-                        style={{ flex: 1, width: '100%' }}
+                        style={styles.mapView}
                         rotateEnabled={false}
                         scrollEnabled={true}
                         zoomEnabled={true}
                         showsBuildings={false}
                         showsPointsOfInterest={false}
-
-                        /* onMapReady={() => {
-                        mapView.current.animateCamera({
-                            center: {
-                                latitude: location.coords.latitude,
-                                longitude: location.coords.longitude,
-                            },
-                        });
-                    }} */
                     >
                         {places.map((place, index) => (
                             <Marker
                                 ref={mark => (place.mark = mark)}
                                 title={place.title}
-                                onPress={() => {
-                                    slidingUpPanel.current.show();
-                                    scrollView.current.scrollTo({
-                                        x: width * index,
-                                        y: 0,
-                                        animated: true,
-                                    });
-                                }}
+                                onPress={markerData =>
+                                    onMarkerPress(markerData, index)
+                                }
                                 //description={place.description}
                                 key={place.id}
                                 coordinate={{
@@ -130,65 +191,51 @@ function Home() {
                     </MapView>
 
                     <SlidingUpPanel
-                        draggableRange={{ top: height / 2.6, bottom: 0 }}
-                        //animatedValue={this._draggedValue}
+                        draggableRange={{
+                            top: windowHeight * 0.475,
+                            bottom: 0,
+                        }}
                         showBackdrop={false}
                         ref={slidingUpPanel}
                         allowMomentum={true}
-                        onMomentumDragEnd={value => {
-                            if (value < 70) {
-                                if (!fabVisible) setFabVisible(true);
-                            } else {
-                                if (fabVisible) setFabVisible(false);
-                            }
-                        }}
-                        onDragEnd={value => {
-                            if (value < 70) {
-                                if (!fabVisible) setFabVisible(true);
-                            } else {
-                                if (fabVisible) setFabVisible(false);
-                            }
-                        }}
+                        onMomentumDragEnd={onPlacesPanelDragEnd}
+                        onDragEnd={onPlacesPanelDragEnd}
                     >
-                        <ScrollView
+                        <PlacesContainer
                             ref={scrollView}
-                            style={styles.placesContainer}
                             horizontal
                             pagingEnabled
                             showsHorizontalScrollIndicator={false}
-                            onMomentumScrollEnd={e => {
-                                const place =
-                                    e.nativeEvent.contentOffset.x > 0
-                                        ? e.nativeEvent.contentOffset.x /
-                                          Dimensions.get('window').width
-                                        : 0;
-                                const { latitude, longitude, mark } = places[
-                                    Math.round(place)
-                                ];
-
-                                mapView.current.animateCamera(
-                                    {
-                                        center: { latitude, longitude },
-                                    },
-                                    { duration: 500 }
-                                );
-
-                                setTimeout(() => {
-                                    mark.showCallout();
-                                }, 500);
-                            }}
+                            onMomentumScrollEnd={onPlacesMomentumScrollEnd}
                         >
                             {places.map(place => (
-                                <Surface key={place.id} style={styles.place}>
-                                    <Text style={styles.title}>
-                                        {place.title}
-                                    </Text>
-                                    <Text style={styles.description}>
-                                        {place.description}
-                                    </Text>
-                                </Surface>
+                                <Place key={place.id}>
+                                    <PlaceImage
+                                        source={require('../../assets/torredetv.png')}
+                                    />
+                                    <Flex p={3}>
+                                        <Text style={styles.title}>
+                                            {place.title}
+                                        </Text>
+                                        <Text style={styles.description}>
+                                            {place.description}
+                                        </Text>
+                                    </Flex>
+                                    <Flex
+                                        display="flex"
+                                        position="absolute"
+                                        bottom={0}
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        width={1}
+                                    >
+                                        <Button mb={1} onPress={() => {}}>
+                                            Fazer check-in
+                                        </Button>
+                                    </Flex>
+                                </Place>
                             ))}
-                        </ScrollView>
+                        </PlacesContainer>
                     </SlidingUpPanel>
                     <FAB
                         style={styles.fab}
@@ -204,7 +251,23 @@ function Home() {
                         )}
                         onPress={() => {
                             slidingUpPanel.current.show();
+                            scrollView.current.scrollTo({ x: 0, y: 0 });
                             setFabVisible(false);
+                            const { latitude, longitude, mark } = places[0];
+
+                            mapView.current.animateCamera(
+                                {
+                                    center: {
+                                        latitude: latitude - 0.015,
+                                        longitude,
+                                    },
+                                },
+                                { duration: 500 }
+                            );
+
+                            setTimeout(() => {
+                                mark.showCallout();
+                            }, 500);
                         }}
                     />
                 </>
@@ -219,6 +282,23 @@ const Container = styled.View`
     align-items: center;
 `;
 
+const PlacesContainer = styled.ScrollView`
+    width: 100%;
+`;
+const Place = styled.View`
+    width: ${windowWidth};
+    max-height: ${windowHeight * 0.475};
+    background-color: #fff;
+    position: relative;
+`;
+
+const PlaceImage = styled.Image`
+    width: 100%;
+    max-height: 150;
+    /* border-top-left-radius: 8;
+    border-top-right-radius: 8; */
+`;
+
 const styles = StyleSheet.create({
     fab: {
         position: 'absolute',
@@ -228,33 +308,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#6200ee',
     },
 
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-
     mapView: {
         position: 'absolute',
         top: 0,
         left: 0,
         bottom: 0,
         right: 0,
-    },
-
-    placesContainer: {
-        width: '100%',
-        maxHeight: 150,
-    },
-
-    place: {
-        width: width - 32,
-        backgroundColor: '#FFF',
-        marginHorizontal: 16,
-        borderRadius: 6,
-        padding: 15,
-        elevation: 3,
     },
 
     title: {
