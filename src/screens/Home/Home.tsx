@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 import MapView, { Marker, MapEvent } from 'react-native-maps';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import { ActivityIndicator, FAB } from 'react-native-paper';
+import { ActivityIndicator, FAB, Badge, Caption } from 'react-native-paper';
 import {
     StyleSheet,
     Dimensions,
@@ -74,7 +74,7 @@ function Home() {
         },
         {
             id: 3,
-            title: 'Esplanada dos Ministérios',
+            title: 'Esplanada',
             description: 'Um dos maiores pontos turísticos de Brasília.',
             latitude: -15.7953534,
             longitude: -47.8906947,
@@ -130,7 +130,7 @@ function Home() {
         mapView.current.animateCamera(
             {
                 center: {
-                    latitude: latitude - 0.01,
+                    latitude: latitude,
                     longitude,
                 },
             },
@@ -157,7 +157,7 @@ function Home() {
         mapView.current.animateCamera(
             {
                 center: {
-                    latitude: latitude - 0.01,
+                    latitude: latitude,
                     longitude,
                 },
             },
@@ -187,9 +187,15 @@ function Home() {
                         style={styles.mapView}
                         rotateEnabled={false}
                         scrollEnabled={true}
-                        zoomEnabled={false}
+                        zoomEnabled={true}
                         showsBuildings={false}
                         showsPointsOfInterest={false}
+                        mapPadding={{
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: windowHeight * 0.2,
+                        }}
                     >
                         {places.map((place, index) => (
                             <Marker
@@ -219,6 +225,7 @@ function Home() {
                         onMomentumDragEnd={onPlacesPanelDragEnd}
                         onDragEnd={onPlacesPanelDragEnd}
                         allowDragging={true} // todo verificar solucao de conflito scroll
+                        friction={0.5}
                     >
                         <PlacesContainer
                             ref={scrollView}
@@ -227,7 +234,7 @@ function Home() {
                             showsHorizontalScrollIndicator={false}
                             onMomentumScrollEnd={onPlacesMomentumScrollEnd}
                         >
-                            {places.map(place => (
+                            {places.map((place, index) => (
                                 <Place key={place.id}>
                                     <PlaceImage
                                         style={{
@@ -302,7 +309,10 @@ function Home() {
                                                         // ml={1}
                                                         color="#000"
                                                     >
-                                                        5.5 km
+                                                        {(
+                                                            Math.random() + 5
+                                                        ).toFixed(1)}{' '}
+                                                        km
                                                     </PlaceLabel>
                                                 </Flex>
                                             </Flex>
@@ -314,6 +324,20 @@ function Home() {
                                         </Text>
                                     </Flex>
                                     <Flex
+                                        position="absolute"
+                                        top={10}
+                                        right={10}
+                                    >
+                                        <Badge
+                                            style={{
+                                                fontWeight: 'bold',
+                                            }}
+                                            size={25}
+                                        >
+                                            {index + 1}/{places.length}
+                                        </Badge>
+                                    </Flex>
+                                    <Flex
                                         display="flex"
                                         position="absolute"
                                         bottom={0}
@@ -321,8 +345,10 @@ function Home() {
                                         px={3}
                                         justifyContent="center"
                                         width={1}
+                                        alignItems="center"
                                     >
                                         <Button
+                                            width={1}
                                             mode="contained"
                                             icon={({
                                                 size,
@@ -365,7 +391,7 @@ function Home() {
                             mapView.current.animateCamera(
                                 {
                                     center: {
-                                        latitude: latitude - 0.01,
+                                        latitude: latitude,
                                         longitude,
                                     },
                                 },
