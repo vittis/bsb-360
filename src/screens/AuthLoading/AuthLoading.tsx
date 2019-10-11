@@ -11,7 +11,7 @@ function AuthLoading(props: NavigationScreenProps) {
 
     useEffect(() => {
         clearErrors();
-        if (!auth.isAuthenticated) {
+        if (auth.isAuthenticated) {
             props.navigation.navigate('App');
         } else {
             props.navigation.navigate('Auth');
