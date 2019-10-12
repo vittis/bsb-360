@@ -4,7 +4,13 @@ import styled from 'styled-components/native';
 import MapView, { Marker, MapEvent } from 'react-native-maps';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import { ActivityIndicator, FAB, Badge, Caption } from 'react-native-paper';
+import {
+    ActivityIndicator,
+    FAB,
+    Badge,
+    Caption,
+    IconButton,
+} from 'react-native-paper';
 import {
     StyleSheet,
     Dimensions,
@@ -16,7 +22,11 @@ import {
 } from 'react-native';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 
-import { Foundation, MaterialCommunityIcons } from '@expo/vector-icons';
+import {
+    Foundation,
+    MaterialCommunityIcons,
+    Ionicons,
+} from '@expo/vector-icons';
 import { Flex } from '../../shared/Flex';
 import { Button } from '../../shared/Button';
 import {
@@ -224,7 +234,7 @@ function Home() {
                         allowMomentum={true}
                         onMomentumDragEnd={onPlacesPanelDragEnd}
                         onDragEnd={onPlacesPanelDragEnd}
-                        allowDragging={true} // todo verificar solucao de conflito scroll
+                        allowDragging={false}
                         friction={0.5}
                     >
                         <PlacesContainer
@@ -236,15 +246,31 @@ function Home() {
                         >
                             {places.map((place, index) => (
                                 <Place key={place.id}>
-                                    <PlaceImage
-                                        style={{
-                                            width: '100%',
-                                            height: windowHeight * 0.2375,
-                                        }}
-                                        source={{
-                                            uri: place.image,
-                                        }}
-                                    />
+                                    <Flex position="relative">
+                                        <PlaceImage
+                                            style={{
+                                                width: '100%',
+                                                height: windowHeight * 0.2375,
+                                            }}
+                                            source={{
+                                                uri: place.image,
+                                            }}
+                                        />
+                                        <Flex
+                                            position="absolute"
+                                            top={10}
+                                            right={10}
+                                        >
+                                            <Badge
+                                                style={{
+                                                    fontWeight: 'bold',
+                                                }}
+                                                size={25}
+                                            >
+                                                {index + 1}/{places.length}
+                                            </Badge>
+                                        </Flex>
+                                    </Flex>
                                     <Flex px={3} py={2} width={1}>
                                         <Flex
                                             flexDirection="row"
@@ -316,26 +342,11 @@ function Home() {
                                                     </PlaceLabel>
                                                 </Flex>
                                             </Flex>
-                                            <Flex>{/* <Text>a</Text> */}</Flex>
                                         </Flex>
 
                                         <Text style={styles.description}>
                                             {place.description}
                                         </Text>
-                                    </Flex>
-                                    <Flex
-                                        position="absolute"
-                                        top={10}
-                                        right={10}
-                                    >
-                                        <Badge
-                                            style={{
-                                                fontWeight: 'bold',
-                                            }}
-                                            size={25}
-                                        >
-                                            {index + 1}/{places.length}
-                                        </Badge>
                                     </Flex>
                                     <Flex
                                         display="flex"
@@ -403,6 +414,27 @@ function Home() {
                             }, 500);
                         }}
                     />
+                    <FAB
+                        style={styles.closeFab}
+                        visible={!fabVisible}
+                        small
+                        icon={({ color: iconColor, size }) => (
+                            <Container>
+                                <Ionicons
+                                    size={size + 5}
+                                    name="ios-arrow-down"
+                                    color={iconColor}
+                                />
+                            </Container>
+                        )}
+                        onPress={() => {
+                            slidingUpPanel.current.hide();
+                            setFabVisible(true);
+                            places.forEach(p => {
+                                p.mark.hideCallout();
+                            });
+                        }}
+                    />
                 </>
             )}
         </Container>
@@ -450,6 +482,13 @@ const styles = StyleSheet.create({
         margin: 16,
         right: 0,
         bottom: 0,
+        backgroundColor: '#6200ee',
+    },
+    closeFab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        top: 0,
         backgroundColor: '#6200ee',
     },
 
