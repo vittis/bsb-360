@@ -4,19 +4,11 @@ import styled from 'styled-components/native';
 import MapView, { Marker, MapEvent } from 'react-native-maps';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import {
-    ActivityIndicator,
-    FAB,
-    Badge,
-    Caption,
-    IconButton,
-} from 'react-native-paper';
+import { ActivityIndicator, FAB, Badge } from 'react-native-paper';
 import {
     StyleSheet,
     Dimensions,
-    View,
     Text,
-    Image,
     NativeSyntheticEvent,
     NativeScrollEvent,
 } from 'react-native';
