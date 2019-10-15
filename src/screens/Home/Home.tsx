@@ -453,16 +453,12 @@ const PlaceLabel = styled.Text<SpaceProps & ColorProps & TypographyProps>`
     ${space}
     ${color}
     ${typography}
-    /* font-weight: bold;
-    font-size: 18; */
     background-color: transparent;
 `;
 
 const PlaceImage = styled.Image`
     width: 100%;
     max-height: ${windowHeight * 0.2375};
-    /* border-top-left-radius: 8;
-    border-top-right-radius: 8; */
 `;
 
 const styles = StyleSheet.create({
