@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react';
 import * as Google from 'expo-google-app-auth';
-import { NavigationScreenProps, StackActions } from 'react-navigation';
+import { NavigationScreenProps } from 'react-navigation';
 import { Formik } from 'formik';
-import { Ionicons, Entypo, Octicons } from '@expo/vector-icons';
-import { AsyncStorage } from 'react-native';
-import api from '../../services/api';
+import { Ionicons, Octicons } from '@expo/vector-icons';
 import { Button } from '../../shared/Button';
 import { TextInput } from '../../shared/TextInput';
 import { HelperText } from 'react-native-paper';
