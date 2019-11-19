@@ -32,10 +32,6 @@ import {
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
 
-Home.navigationOptions = {
-    title: 'opora',
-};
-
 interface Place {
     id: number;
     title: string;
@@ -462,9 +458,6 @@ const PlaceImage = styled.Image`
 `;
 
 const styles = StyleSheet.create({
-    sefode: {
-        marginRight: 10,
-    },
     fab: {
         position: 'absolute',
         margin: 16,

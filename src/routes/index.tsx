@@ -8,19 +8,41 @@ import {
 import Home from '../screens/Home';
 import SignIn from '../screens/SignIn';
 import SignUp from '../screens/SignUp';
-import { Platform } from 'react-native';
 import AuthLoading from '../screens/AuthLoading';
 import styled from 'styled-components/native';
-import { Octicons, Ionicons, Foundation } from '@expo/vector-icons';
+import {
+    Octicons,
+    Ionicons,
+    Foundation,
+    FontAwesome,
+    MaterialCommunityIcons,
+} from '@expo/vector-icons';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import withAuthRoute from './withAuthRoute';
 import Profile from '../screens/Profile';
+import { Flex } from '../shared/Flex';
+import { Badge, ProgressBar } from 'react-native-paper';
+import { Button } from '../shared/Button';
+import { StyleSheet } from 'react-native';
 
 const LogoText = styled.Text`
     margin-left: 10px;
     font-size: 18px;
     font-style: italic;
 `;
+
+const Text = styled.Text`
+    font-weight: bold;
+    margin-left: 2px;
+    margin-right: 2px;
+`;
+
+const styles = StyleSheet.create({
+    bar: {
+        margin: 0,
+        padding: 0,
+    },
+});
 
 /**
  * Wrap screens with withAuthRoute HOC
@@ -45,17 +67,49 @@ const AppStack = createStackNavigator(
         ...createAuthRoutes([Home]),
     },
     {
-        headerLayoutPreset: 'center',
-        defaultNavigationOptions: {
-            headerTitle: (
-                <>
-                    <Octicons name="globe" size={25} color="#5b1ab8" />
-                    <LogoText>BSB 360º</LogoText>
-                </>
-            ),
-            headerStyle: {
-                backgroundColor: '#F5F5F5',
-            },
+        defaultNavigationOptions: ({ navigation }) => {
+            return {
+                headerLeft: (
+                    <Flex flexDirection="row" pl={3}>
+                        <Octicons name="globe" size={25} color="#5b1ab8" />
+                        <LogoText>BSB 360º</LogoText>
+                    </Flex>
+                ),
+                headerRight: (
+                    <Flex flexDirection="row" pr={2} alignItems="center">
+                        <Flex mx={1} flex={1} flexDirection="row">
+                            <MaterialCommunityIcons
+                                size={18}
+                                color="#6200ee"
+                                name="star-circle"
+                            />
+                            <Text>Nível 1</Text>
+                        </Flex>
+                        <ProgressBar
+                            style={styles.bar}
+                            progress={0.5}
+                            color="#5b1ab8"
+                        />
+
+                        <Button
+                            ml={1}
+                            compact
+                            onPress={() => {
+                                navigation.navigate('Profile');
+                            }}
+                        >
+                            <FontAwesome
+                                name="user-circle"
+                                size={25}
+                                color="#4a119c"
+                            />
+                        </Button>
+                    </Flex>
+                ),
+                headerStyle: {
+                    backgroundColor: '#F5F5F5',
+                },
+            };
         },
     }
 );

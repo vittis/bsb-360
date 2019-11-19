@@ -2,17 +2,21 @@ import React from 'react';
 import { NavigationScreenProps } from 'react-navigation';
 import styled from 'styled-components/native';
 import { Button } from '../../shared/Button';
+import { useAuth } from '../../store/ducks/auth/hooks';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function Profile(props: NavigationScreenProps) {
+    const { authSignOut } = useAuth();
     return (
         <Container>
             <Text>Profile Screen</Text>
-            <Button mode="contained" onPress={() => {}}>
+            <Button
+                mode="contained"
+                onPress={() => {
+                    authSignOut();
+                }}
+            >
                 Logout
-            </Button>
-            <Button mode="contained" onPress={() => {}}>
-                Me
             </Button>
         </Container>
     );
