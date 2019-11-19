@@ -95,7 +95,7 @@ const AppStack = createStackNavigator(
                             ml={1}
                             compact
                             onPress={() => {
-                                navigation.navigate('Profile');
+                                navigation.navigate('Perfil');
                             }}
                         >
                             <FontAwesome
@@ -149,7 +149,7 @@ function TabBarIcon(props) {
 const tabNavigator = createMaterialBottomTabNavigator(
     {
         AppStack,
-        Profile,
+        Perfil: Profile,
     },
     {
         defaultNavigationOptions: ({ navigation }) => ({
@@ -159,7 +159,7 @@ const tabNavigator = createMaterialBottomTabNavigator(
 
                 if (routeName === 'AppStack') {
                     iconName = 'md-map';
-                } else if (routeName === 'Profile') {
+                } else if (routeName === 'Perfil') {
                     iconName = `ios-person`;
                 }
 
