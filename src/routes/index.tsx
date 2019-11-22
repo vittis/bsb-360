@@ -29,6 +29,7 @@ const LogoText = styled.Text`
     margin-left: 10px;
     font-size: 18px;
     font-style: italic;
+    font-weight: bold;
 `;
 
 const Text = styled.Text`
@@ -62,7 +63,7 @@ const createAuthRoutes = (screens: any[]) => {
 /**
  * Main App Stack
  */
-const AppStack = createStackNavigator(
+const HomeStack = createStackNavigator(
     {
         ...createAuthRoutes([Home]),
     },
@@ -113,7 +114,7 @@ const AppStack = createStackNavigator(
         },
     }
 );
-AppStack.navigationOptions = {
+HomeStack.navigationOptions = {
     tabBarLabel: 'Início',
 };
 
@@ -148,8 +149,8 @@ function TabBarIcon(props) {
 
 const tabNavigator = createMaterialBottomTabNavigator(
     {
-        AppStack,
         Perfil: Profile,
+        HomeStack,
     },
     {
         defaultNavigationOptions: ({ navigation }) => ({
@@ -157,7 +158,7 @@ const tabNavigator = createMaterialBottomTabNavigator(
                 const { routeName } = navigation.state;
                 let iconName;
 
-                if (routeName === 'AppStack') {
+                if (routeName === 'HomeStack') {
                     iconName = 'md-map';
                 } else if (routeName === 'Perfil') {
                     iconName = `ios-person`;

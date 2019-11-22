@@ -10,14 +10,24 @@ import {
     LayoutProps,
     position,
     PositionProps,
+    color,
+    ColorProps,
+    shadow,
+    ShadowProps,
 } from 'styled-system';
 
 export const Flex = styled.View<
-    FlexboxProps & SpaceProps & BorderProps & LayoutProps & PositionProps
+    FlexboxProps &
+        SpaceProps &
+        BorderProps &
+        LayoutProps &
+        PositionProps &
+        ColorProps
 >`
     ${position}
     ${layout}
     ${flexbox}
     ${space}
     ${border}
+    ${color}
 `;
