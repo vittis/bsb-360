@@ -8,6 +8,6 @@ API Repo: [https://github.com/vittis/bsb-360-api](https://github.com/vittis/bsb-
 
 ## Screenshots
 
-![](https://user-images.githubusercontent.com/6865839/71483647-98a37800-27e7-11ea-8dcc-d7637b99ff33.jpg)
+![](https://user-images.githubusercontent.com/6865839/71483878-97bf1600-27e8-11ea-9c2b-a52ac414b44c.jpg)
 
-![](https://user-images.githubusercontent.com/6865839/71483685-b83aa080-27e7-11ea-94a1-eb54329e2400.jpg)
+![](https://user-images.githubusercontent.com/6865839/71483950-cb01a500-27e8-11ea-9335-260cc97738b5.jpg)
