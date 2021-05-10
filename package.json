@@ -13,7 +13,7 @@
     "expo-google-app-auth": "^6.0.0",
     "expo-web-browser": "~6.0.0",
     "formik": "^1.5.8",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "react": "16.8.3",
     "react-dom": "^16.8.6",
     "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz",
